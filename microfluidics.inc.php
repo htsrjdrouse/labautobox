@@ -68,12 +68,11 @@
   }
  } 
   if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
-  if(!(isset($_SESSION['dryrefnum']))){ $_SESSION['dryrefnum']  = 0; }
-
-  $pcmd = "touch_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."_".($coord['z'])."_".($coord['ztrav'])."_".$_SESSION['labbotprogram']['feedrate']."_".($_SESSION['drypadtime']);
+  if (!(isset($_SESSION['dryrefnum']))){ $_SESSION['dryrefnum'] = 0;} else { $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1; }
+  $_SESSION['dryrefnum'] = 0;
+  $pcmd = "touch_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."_".($coord['Z'])."_".($coord['ztrav'])."_".$_SESSION['labbotprogram']['feedrate']."_".($_SESSION['drypadtime']);
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
   exec($cmd);
-
   
 }?>
 
@@ -288,13 +287,12 @@
 
 <div class="col-sm-4">
 <form action=<?=$_SERVER['PHP_SELF']?> method=post><font size=2>
-<? if($jsonmicrofl['manpcv'] == 0) { ?>
 <table>
 <tr>
 <td><font size=1><b>Sensor</b></font> </td>
 </tr>
 <tr>
-<td><input type=text name=setlevel value="<?=$jsonmicrofl['sensorvalue']?>" size=3  style="text-align:right;font-size:10px;"> &nbsp;&nbsp;</td>
+<td><input type=text name=setlevel value="<?=$jsonmicrofl['setlevelval']?>" size=3  style="text-align:right;font-size:10px;"> &nbsp;&nbsp;</td>
 </tr>
 <tr>
 <td><font size=1><b>Heat</b></font> </td>
@@ -303,7 +301,7 @@
 <td><input type=text name=heatval value="<?=$jsonmicrofl['heatval']?>" size=3  style="text-align:right;font-size:10px;"> &nbsp;&nbsp;</td>
 </tr>
 </table>
-
+<? if($jsonmicrofl['manpcv'] == 1) { ?>
 <button type="submit" name=feedbackpcv value="feedbackpcv"  class="btn btn-warning btn-xs">Feedback on</button><br>
 <? } else { ?>
 <button type="submit" name=manpcv value="manpcv"  class="btn btn-danger btn-xs">Feedback off</button>

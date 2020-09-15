@@ -1,4 +1,4 @@
-
+<? session_start(); ?>
 <?
  $jsonimg = json_decode(file_get_contents('nx.imgdataset.json'), true);
  if (isset($_POST['checkbutn'])){
@@ -21,6 +21,7 @@
 
  if (isset($_POST['sendxyfeed'])){
    $xyfeed = $_POST['xyfeed']; 
+   $_SESSION['labbotprogram']['feedrate'] = $xyfeed;
    $jsonimg['speed']['xyjogfeed'] = $xyfeed;
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
  }

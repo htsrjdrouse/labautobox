@@ -115,57 +115,69 @@ def on_message(client, userdata, message):
     cmd = str(message.payload.decode("utf-8"))
     if re.match("^setval.*", cmd):
       microflstatus['heatval'] = int(re.sub("^setval ", "", cmd))
-      aser.write(cmd.encode())
+      aser.write(cmd.encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
     #if re.match("^heater.*", cmd):
     #  aser.write(cmd.encode())
     if cmd == "washon":
       microflstatus['washon'] = 1
+      print(cmd)
       aser.write(cmd.encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
     if cmd == "washoff":
       microflstatus['washon'] = 0
-      #print(cmd)
+      print(cmd)
       aser.write(cmd.encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
     if cmd == "wasteon":
       #print(cmd)
       #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setpcvval":60,"heatval":100}
       microflstatus['wasteon'] = 1
       aser.write("dryon".encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
     if cmd == "wasteoff":
       #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setpcvval":60,"heatval":100}
       microflstatus['wasteon'] = 0
       aser.write("dryoff".encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
     if cmd == "pcvoff":
       #print(cmd)
       #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setpcvval":60,"heatval":100}
       microflstatus['pcvon'] = 0
       aser.write(cmd.encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
     if cmd == "pcvon":
       #print(cmd)
       #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setpcvval":60,"heatval":100}
       microflstatus['pcvon'] = 1
       aser.write(cmd.encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
     if cmd == "manpcv":
       aser.write("setlevelval 0".encode()+"\n".encode())
       time.sleep(0.5)
       aser.write("manpcv".encode()+"\n".encode())
       #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setpcvval":60,"heatval":100}
       microflstatus['manpcv'] = 1
+      writemicrofluidicsjson(microflstatus)
     if cmd == "feedbackpcv":
       #print(cmd)
       time.sleep(0.5)
       aser.write(cmd.encode()+"\n".encode())
       #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setpcvval":60,"heatval":100}
       microflstatus['manpcv'] = 0
+      writemicrofluidicsjson(microflstatus)
     if cmd == "heaton":
       #print(cmd)
       aser.write(cmd.encode()+"\n".encode())
       #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setpcvval":60,"heatval":100}
       microflstatus['heaton'] = 1
+      writemicrofluidicsjson(microflstatus)
     if cmd == "heatoff":
       #print(cmd)
       aser.write(cmd.encode()+"\n".encode())
       #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setpcvval":60,"heatval":100}
       microflstatus['heaton'] = 0
+      writemicrofluidicsjson(microflstatus)
     if cmd == "readlevel":
       leveldisplay(aser,cmd)
     if re.match("setlevelval.*", cmd):
@@ -174,10 +186,12 @@ def on_message(client, userdata, message):
       microflstatus['setlevelval'] = int(re.sub("^setlevelval ", "", cmd))
       microflstatus['heaton'] = 0
       aser.write(cmd.encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
     if re.match("heatval.*", cmd):
       microflstatus['heatval'] = int(re.sub("^heatval ", "", cmd))
       print(cmd)
       aser.write(cmd.encode()+"\n".encode())
+      writemicrofluidicsjson(microflstatus)
 
 
 ports = whatstheports()
@@ -188,8 +202,6 @@ time.sleep(0.2)
 aser.write("heatoff".encode()+"\n".encode())
 time.sleep(0.2)
 aser.write("washoff".encode()+"\n".encode())
-time.sleep(0.2)
-aser.write("wasteoff".encode()+"\n".encode())
 time.sleep(0.2)
 aser.write("dryoff".encode()+"\n".encode())
 time.sleep(0.2)

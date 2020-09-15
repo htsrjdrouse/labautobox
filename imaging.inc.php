@@ -14,22 +14,27 @@ if(isset($_POST['opendir'])){
  }
 if(isset($_POST['createdir'])){ 
   unset($_SESSION['labbot3d']['img']);
-  $_SESSION['labbot3d']['imgdir'] = $_POST['imgdirlist'];
   $date = date('mdYHis');
-  mkdir("imaging/".$date, 0777);
+  $_SESSION['labbot3d']['imgdir'] = $date;
+  $cmd = 'mosquitto_pub -h '.$_SESSION['cameraip'].' -t "dcam2" -m "createdir '.$_SESSION['labbot3d']['imgdir'].'"';
+  exec($cmd);
  }
 if(isset($_POST['removedir'])){ 
+  if (isset($_SESSION['labbot3d']['imgdir'])){
+   $cmd = 'mosquitto_pub -h '.$_SESSION['cameraip'].' -t "dcam2" -m "rmdir '.$_SESSION['labbot3d']['imgdir'].'"';
+   exec($cmd);
+  }
   unset($_SESSION['labbot3d']['imgdir']);
-  rmdir("imaging/".$_POST['imgdirlist']);
  }
 if(isset($_POST['snap'])){ 
   if (isset($_SESSION['labbot3d']['imgdir'])){
     $_SESSION['labbot3d']['camfocus'] = $_POST['camfocus'];
     $_SESSION['labbot3d']['camexposure'] = $_POST['camexposure'];
-    $cmd = 'mosquitto_pub -t "labbot" -m "snap '.$_SESSION['labbot3d']['imgdir'].' '.$_SESSION['labbot3d']['camfocus'].' '.$_SESSION['labbot3d']['camexposure'].'"';
+    $_SESSION['labbot3d']['filename'] = $_POST['fname'];
+    $date = date('His');
+    $cmd = 'mosquitto_pub -h '.$_SESSION['cameraip'].' -t "dcam2" -m "snap '.$_SESSION['labbot3d']['camfocus'].'_'.$_SESSION['labbot3d']['camexposure'].'_'.$_SESSION['labbot3d']['imgdir'].'_'.$_SESSION['labbot3d']['filename'].$date.'"';
     exec($cmd);
-    echo($cmd);
-    sleep(4);
+    sleep(1);
   }
  }
 ?>
@@ -69,7 +74,10 @@ if(!isset($_SESSION['cameraip'])){
 <? if(!isset($_SESSION['labbot3d']['camfocus'])){ $_SESSION['labbot3d']['camfocus'] = 400;}
    if(!isset($_SESSION['labbot3d']['camexposure'])){ $_SESSION['labbot3d']['camexposure'] = 50;} ?>
 Focus <input type=text name=camfocus value=<?=$_SESSION['labbot3d']['camfocus']?> size=3> <br>
-Exposure <input type=text name=camexposure value=<?=$_SESSION['labbot3d']['camexposure']?> size=3>
+Exposure <input type=text name=camexposure value=<?=$_SESSION['labbot3d']['camexposure']?> size=3><br>
+Filename <input type=text name=fname value="<?=$_SESSION['labbot3d']['filename']?>" size=3><br>
+
+
 
 <button type="submit" name=snap value="snap"  class="btn btn-warning btn-sm">Snap pic</button>&nbsp;&nbsp;
 <button type="submit" name=openpic value="openpic"  class="btn btn-success btn-sm">Open pic</button>
@@ -81,14 +89,13 @@ Exposure <input type=text name=camexposure value=<?=$_SESSION['labbot3d']['camex
 <div class="row">
 <div class="col-sm-5">
 
-
-<?
-$ff = scandir('./imaging/');
-?>
+<?  //$output = shell_exec("wget --spider -r --no-parent http://192.168.1.89/"); ?>
+<?  $output = shell_exec("sudo ssh pi@".$_SESSION['cameraip']." ls /var/www/html/imaging"); ?>
+<? $ff = (preg_split("/\n/", $output));?><br>
 <? $size = count($ff); ?>
 <? if($size > 11) {$size = 10;} ?>
  <select class="form-control form-control-sm" name="imgdirlist" size=3>
- <?for($i=2;$i<count($ff);$i++){?>
+ <?for($i=0;$i<count($ff);$i++){?>
  <? if ($_SESSION['labbot3d']['imgdir'] == $ff[$i]) {?>
    <option value=<?=$ff[$i]?> selected><?=$ff[$i]?></option>
   <? } else { ?>
@@ -97,14 +104,14 @@ $ff = scandir('./imaging/');
 <? } ?>
  </select>
 </div>
+
+
 <div class="col-sm-5">
 <? if (isset($_SESSION['labbot3d']['imgdir'])){ ?>
-<?
-$fff = scandir('./imaging/'.$_SESSION['labbot3d']['imgdir']);
-//var_dump($fff);
-?>
+<?  $output = shell_exec("sudo ssh pi@".$_SESSION['cameraip']." ls /var/www/html/imaging/".$_SESSION['labbot3d']['imgdir']); ?>
+<? $fff = (preg_split("/\n/", $output));?><br>
  <select class="form-control form-control-sm" name="imglist" size=3>
- <?for($i=2;$i<count($fff);$i++){?>
+ <?for($i=0;$i<count($fff);$i++){?>
  <? if($_SESSION['labbot3d']['img'] == $fff[$i]) {?>
    <option value=<?=$fff[$i]?> selected><?=$fff[$i]?></option>
   <? } else { ?>
@@ -122,7 +129,7 @@ $fff = scandir('./imaging/'.$_SESSION['labbot3d']['imgdir']);
 <div class="col-sm-1">&nbsp;</div>
 <div class="col-sm-10"></div>
  <? if(isset($_SESSION['labbot3d']['img'])) {?>
- <img src=imaging/<?=$_SESSION['labbot3d']['imgdir']?>/<?=$_SESSION['labbot3d']['img']?> width=320 height=240>
+ <img src=http://<?=$_SESSION['cameraip']?>/imaging/<?=$_SESSION['labbot3d']['imgdir']?>/<?=$_SESSION['labbot3d']['img']?> width=320 height=240>
  <? }?>
 </div>
 </div>

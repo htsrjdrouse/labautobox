@@ -147,12 +147,13 @@ void setup()
 
  <?foreach($_SESSION['labbotjson']['types'][0] as $key => &$val){ 
   if ($val['status'] == "on") { ?>
+   <? if($val['shape'] == "ellipse"){ ?>
    fill(<?=$val['color']?>);
    text("<?=$val['name']?>",<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-$val['posy']+$margin['y'])?>);
    noStroke();
-   rect(<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-$val['posy']+$margin['y'])?>,<?=$val['X']?>,<?=$val['Y']?>);
    stroke(0,0,0);
-   <? if($val['shape'] == "ellipse"){ ?>
+   //rect(<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-$val['posy']+$margin['y'])?>,<?=$val['X']?>,<?=$val['Y']?>);
+   rect(<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-$val['posy'])?>,<?=$val['X']?>,<?=$val['Y']?>);
    <? for($x=0;$x<$val['wellcolumn'];$x++){ ?>
    <?for($y=0;$y<$val['wellrow'];$y++){ ?>
    ellipse(<?=($val['posx']+$shimx+$val['marginx']+($x*$val['wellcolumnsp']+(($val['shimx']/$val['wellrow'])*$y)+$val['shapex']/2))?>,<?=($bedsizey+($shimy)-$val['posy']-($val['marginy']*1)) - ($y*$val['wellrowsp']) - (($val['shimy']/$val['wellrow'])*$y)?>,<?=$val['shapex']?>,<?=$val['shapey']?>);
@@ -161,9 +162,15 @@ void setup()
    <? } ?>
 
    <? if($val['shape'] == "square"){ ?>
+   fill(<?=$val['color']?>);
+   text("<?=$val['name']?>",<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-($val['posy']*1)-($val['marginy']))?>);
+   noStroke();
+   stroke(0,0,0);
+   //rect(<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-$val['posy']-$margin['y'])?>,<?=$val['X']?>,<?=$val['Y']?>);
+   rect(<?=($val['posx']+$shimx)?>,<?=($bedsizey+($shimy)-$val['Y']-$val['posy']-$val['marginy'])?>,<?=$val['X']?>,<?=$val['Y']?>);
    <? for($x=0;$x<$val['wellcolumn'];$x++){ ?>
    <?for($y=0;$y<$val['wellrow'];$y++){ ?>
-   rect(<?=($val['posx']+$shimx+$val['marginx']+($x*$val['wellcolumnsp']+(($val['shimx']/$val['wellrow'])*$y)))?>,<?=($bedsizey+($shimy)-$val['posy']-($val['marginy']*1)) - ($y*$val['wellrowsp']) - (($val['shimy']/$val['wellrow'])*$y)?>,<?=$val['shapex']?>,<?=$val['shapey']?>);
+   rect(<?=($val['posx']+$shimx+$val['marginx']+($x*$val['wellcolumnsp']+(($val['shimx']/$val['wellrow'])*$y)))?>,<?=($bedsizey+($shimy)-$val['posy']-($val['marginy']*2)+1) - ($y*$val['wellrowsp']) - (($val['shimy']/$val['wellrow'])*$y)?>,<?=$val['shapex']?>,<?=$val['shapey']?>);
    <? } ?>
    <? }?>
    <? } ?>

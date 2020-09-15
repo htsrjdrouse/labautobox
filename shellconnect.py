@@ -35,13 +35,6 @@ def whatstheports():
 
 
 
-
-
-
-
-
-
-
 def openport(prt):
   try:
    ser = serial.Serial("/dev/tty"+prt, 115200, timeout=0.2)

@@ -10,13 +10,18 @@ from adafruit_servokit import ServoKit
 def touchdry(cmd):
   [p,x,y,z,ztrav,f,t] = re.split("_", cmd)
   mcmd = "G1Z"+ztrav+"F"+f
+  print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
   mcmd = "G1X"+x+"Y"+y+"F"+f
+  print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
   mcmd ="G1Z"+z+"F"+f
+  print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
+  print(t)
   time.sleep(float(t))  
   mcmd = "G1Z"+ztrav+"F"+f
+  print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
 
 def snap(cmd,cameraip):
