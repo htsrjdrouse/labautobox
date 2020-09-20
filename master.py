@@ -48,7 +48,7 @@ def on_message(client, userdata, message):
     if cmd == "turnon":
       print("turning on ... ")
       #subprocess.Popen(["sudo","python3", "/home/pi/labbot/microflsubscriber.py"]).pid
-      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/microflsubscriber.py"]).pid
+      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/microflsub.py"]).pid
       time.sleep(0.5)
       #subprocess.Popen(["sudo","python3", "/home/pi/labbot/subscriber.py"]).pid
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/subscriber.py"]).pid
@@ -64,6 +64,8 @@ def on_message(client, userdata, message):
     if re.match("^turnoff.*", cmd):
       killproc('subscriber.py')
       print("turning off ... ")
+      time.sleep(0.5)
+      killproc('microflsub.py')
       time.sleep(0.5)
       killproc('positiondisplay.py')
       time.sleep(0.5)

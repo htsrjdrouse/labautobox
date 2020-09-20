@@ -154,7 +154,6 @@
   }
  }
  $tiplistst = preg_replace("/.$/", "", $tiplistst);
- //echo "tiplist ".$tiplistst."<br>";
  $jsonmicrofl['tiplist'] = $tiplist;
  $_SESSION['labbot3d']['tiplist'] = $tiplist; 
  $_SESSION['labbot3d']['editvalvepos'] = 0; 
