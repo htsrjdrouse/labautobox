@@ -1,3 +1,4 @@
+<? session_start(); ?>
 <? if (!isset($_SESSION['labbotprogramjson'])){
    $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
 } ?>
@@ -161,7 +162,7 @@
      //$cmdlist = motion($cmdlist,$labbotprogramjson);
      array_push($cmdlist, "G1X".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."Y".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."F".$labbotprogramjson['feedrate']);
      $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1;
-     if($_SESSION['dryrefnum'] == count($coord[0]['drypositions'])-1){$_SESSION['dryrefnum'] = 0;}
+     if($_SESSION['dryrefnum'] == count($coord[0]['drypositions'])-1){$_SESSION['dryrefnum'] = 0;} 
      array_push($cmdlist,"G1Z".($coord['Z'] - $labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']."_".$labbotprogramjson['drypadtime']);
      array_push($cmdlist,"G1Z".$coord['ztrav']);
     }
@@ -172,7 +173,11 @@
 ?>
 
 <? function syringe($cmdlist,$labbotprogramjson){ 
+ //$_SESSION["microliter"]=$labbotprogramjson['microliter'];
+ //$_SESSION["syringespeed"]= $labbotprogramjson['syringespeed'];
+ //$_SESSION["syringeacceleration"]= $labbotprogramjson['syringeacceleration'];
  if ($labbotprogramjson['mesg'] == "homing syringe"){
+	 $_SESSION["microliter"]=0;
 	 $line = "sg28e0_".$labbotprogramjson['syringetime'];
  } else {
 	 $line = "sg1e".$labbotprogramjson['microliter']."s".$labbotprogramjson['syringespeed']."a".$labbotprogramjson['syringeacceleration']."_".$labbotprogramjson['syringetime'];

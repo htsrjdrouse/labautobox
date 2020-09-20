@@ -388,7 +388,7 @@ def writeschedularjson(dat):
   pcv.write(pcvdatar)
   pcv.close()
 
-def runmacro(dser,aser,kit,sser):
+def runmacro(dser,kit,sser):
    coordlog = {}
    coordlog['X'] =[]
    coordlog['Y'] =[]
@@ -402,7 +402,7 @@ def runmacro(dser,aser,kit,sser):
    macroready = putmacrolinestogether(reformatmacro)
    labbotrunning(1)
    for i in macroready:
-    runeachmacrocmd(i,dser,aser,kit)
+    runeachmacrocmd(i,dser,kit)
    labbotrunning(0)
    getposition(dser)
 
@@ -720,7 +720,7 @@ def on_message(client, userdata, message):
      try: 
       #upublisher(mesg)
       print("runmacro called")
-      runmacro(dser,aser,kit,sser)
+      runmacro(dser,kit,sser)
      except:
       pass
       #print("can not send a mqtt")

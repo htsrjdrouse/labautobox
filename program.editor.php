@@ -1,6 +1,7 @@
 <? session_start(); ?>
 <? include('functionslib.php'); ?>
 <? include('labbotfunctions.php'); ?>
+<? $_SESSION['runmacro'] = 0; ?>
 <?
 if (isset($_POST['custommacro'])){ 
  unset($_SESSION['labbotprogramjson']);
@@ -22,16 +23,16 @@ if (isset($_POST['custommacro'])){
 
 if (isset($_POST['deletecustommacro'])){ 
  $macros = json_decode(file_get_contents('labbot.macros.json'), true);
- echo $_POST['macrolist'].'<br>';
+ //echo $_POST['macrolist'].'<br>';
  $newmacro = array();
  foreach($macros['macros'] as $akey => &$val){ 
   if($akey != $_POST['macrolist']){
-  echo $akey.'<br>';
+  //echo $akey.'<br>';
   array_push($newmacro,array("fname"=>$val['fname'], "content"=>$val['content']));
   }
  }
  $macros['macros'] = $newmacro;
- var_dump($newmacro);
+ //var_dump($newmacro);
  file_put_contents('labbot.macros.json', json_encode($macros));
  header("Location: index.php");
  }
@@ -318,6 +319,9 @@ if (isset($_POST['displaymacro'])){
      displaymacro($cmdlist);
   }
   if($labbotprogramjson[$mm]['tasktype'] == "syringe"){
+    $_SESSION["microliter"]=$labbotprogramjson[$mm]['microliter'];
+    $_SESSION["syringespeed"]= $labbotprogramjson[$mm]['syringespeed'];
+    $_SESSION["syringeacceleration"]= $labbotprogramjson[$mm]['syringeacceleration'];
     $cmdlist = syringe($cmdlist, $labbotprogramjson[$mm]);
      displaymacro($cmdlist);
   }
@@ -365,6 +369,9 @@ if (isset($_POST['editmacro'])){
     $cmdlist = valve($cmdlist, $labbotprogramjson[$mm]);
   }
   if($labbotprogramjson[$mm]['tasktype'] == "syringe"){
+    $_SESSION["microliter"]=$labbotprogramjson[$mm]['microliter'];
+    $_SESSION["syringespeed"]= $labbotprogramjson[$mm]['syringespeed'];
+    $_SESSION["syringeacceleration"]= $labbotprogramjson[$mm]['syringeacceleration'];
     $cmdlist = syringe($cmdlist, $labbotprogramjson[$mm]);
   }
   if($labbotprogramjson[$mm]['tasktype'] == "gpio"){
@@ -408,6 +415,7 @@ if (isset($_POST['runmacro'])){
  sleep(1);
  exec('mosquitto_pub -t "labbot" -m "runmacro"');
  //$_SESSION['labbot']['view'] = 'logger';
+ $_SESSION['runmacro'] = 1;
  header("Location: index.php");
 }
 

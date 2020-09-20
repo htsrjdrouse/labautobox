@@ -156,6 +156,7 @@
  $tiplistst = preg_replace("/.$/", "", $tiplistst);
  //echo "tiplist ".$tiplistst."<br>";
  $jsonmicrofl['tiplist'] = $tiplist;
+ $_SESSION['labbot3d']['tiplist'] = $tiplist; 
  $_SESSION['labbot3d']['editvalvepos'] = 0; 
  $_SESSION['labbot3d']['valvepos'] = $_POST['valvepos'];
  file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
@@ -176,9 +177,10 @@
 <b>Select valves</b>
 </div>
 <div class="col-sm-8">
+<?if(!isset($_SESSION['labbot3d']['tiplist'])){ $_SESSION['labbot3d']['tiplist'] = $jsonmicrofl['tiplist']; } ?>
 <table><tr>
 <? for($i=0;$i<8;$i++){ ?>
-<td align=center><?=($i+1)?><br><input type=checkbox class="form-check-input" name="valve<?=($i)?>" <? if ($jsonmicrofl['tiplist'][$i] == 1){ echo "checked"; }?>>&nbsp;</td>
+<td align=center><?=($i+1)?><br><input type=checkbox class="form-check-input" name="valve<?=($i)?>" <? if ($_SESSION['labbot3d']['tiplist'][$i] == "1"){ echo "checked"; }?>>&nbsp;</td>
 <? } ?>
 </tr></table>
 </div>

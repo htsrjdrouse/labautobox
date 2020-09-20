@@ -7,7 +7,7 @@
  <div class="col-sm-4"> 
  <?if(!isset($_SESSION['syringespeed'])){ $_SESSION['syringespeed'] = 30;}?>
  <?if(!isset($_SESSION['syringeacceleration'])){ $_SESSION['syringeacceleration'] = 15;}?>
- <?if(!isset($_SESSION['microliter'])){ $_SESSION['microliter'] = 10;}?>
+ <?if(!isset($_SESSION['microliter'])){ $_SESSION['microliter'] = 0;}?>
  <?if(!isset($_SESSION['syringetime'])){ $_SESSION['syringetime'] = 1;}?>
  <?$jsonimg = json_decode(file_get_contents('nx.imgdataset.json'), true); ?>
 <b>Volume &micro;l</b> <input type=text name=microliter value="<?=$_SESSION['microliter']?>" size=4><br>

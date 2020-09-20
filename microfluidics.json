@@ -1,1 +1,1 @@
-{"heaton":0,"heatval":100,"manpcv":0,"pcvon":0,"setlevelval":47,"tiplist":[1,1,1,1,1,1,1,1],"valvepos":"bypass","washon":0,"wasteon":0}
+{"heaton":0,"heatval":100,"manpcv":1,"pcvon":0,"setlevelval":60,"tiplist":[1,1,1,1,1,1,1,1],"valvepos":"output","washon":0,"wasteon":0,"wash":{"on":1},"waste":{"on":1},"pcv":{"on":1}}
