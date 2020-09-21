@@ -7,10 +7,24 @@ import json
 import operator
 from adafruit_servokit import ServoKit
 
-def touchdry(cmd):
-  [p,x,y,z,ztrav,f,t] = re.split("_", cmd)
+#$prog = array("program"=>$vvr, "drypositions"=>$drypositions, "dryrefnum"=>$dryrefnum);
+def touchdry(cmd,taskjob):
+  print("touchdry called")
+  #justdry Z9.5F3000ZT0
+  a = re.match('justdry Z(.*)F(.*)ZT(.*)T(.*)', cmd)
+  z = a.group(1)
+  f = a.group(2)
+  ztrav= a.group(3)
+  t = a.group(4)
   mcmd = "G1Z"+ztrav+"F"+f
-  print(mcmd)
+  print("ztrav "+mcmd)
+  print("time "+t)
+  #print(taskjob['drypositions'])
+  dryrefnum = int(taskjob['dryrefnum']) + 1
+  if dryrefnum == (len(taskjob['drypositions'])-1): 
+      dryrefnum = 0
+  taskjob['dryrefnum'] = str(dryrefnum)
+  '''
   dser.write(mcmd.encode()+"\n".encode())
   mcmd = "G1X"+x+"Y"+y+"F"+f
   print(mcmd)
@@ -23,6 +37,8 @@ def touchdry(cmd):
   mcmd = "G1Z"+ztrav+"F"+f
   print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
+  '''
+  upublisher("dryreftrack " + dryrefnum)
 
 def snap(cmd,cameraip):
   d = datetime.datetime.today()
@@ -80,8 +96,14 @@ def labbotrunning(pp):
      os.system(cmd)
 
 
+def justdryparser(cmdstr,dser):
+  #justdry X235.5Y51Z9.5F3000ZT0I0 
+  a =re.match('^justdry X(.*)Y(.*)Z(.*)F(.*)ZT(.*)I(.*)$', cmdstr) 
+  gcodecmd = 'G1Z'+a.group(5)+'F'.a.group(4)
+  dser.write(gcodecmd.encode()+"\n".encode())
+
 #runeachmacrocmd(i,dser,aser)
-def runeachmacrocmd(cmd,dser,kit):
+def runeachmacrocmd(cmd,dser,kit,taskjob):
   nx = open('nx.imgdataset.json')
   mesg = json.load(nx)
   nx.close()
@@ -129,6 +151,7 @@ def runeachmacrocmd(cmd,dser,kit):
    if re.match("^wash.*", cmd):
      pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
      os.system(pcmd)
+     upublisher(cmd)
      '''
      acmd = cmd
      if re.match("^.*_.*$", acmd):
@@ -142,6 +165,7 @@ def runeachmacrocmd(cmd,dser,kit):
    if re.match("^pcv.*", cmd):
      pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
      os.system(pcmd)
+     upublisher(cmd)
      '''
      acmd = cmd
      if re.match("^.*_.*$", acmd):
@@ -155,6 +179,7 @@ def runeachmacrocmd(cmd,dser,kit):
    if re.match("^waste.*", cmd):
      pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
      os.system(pcmd)
+     upublisher(cmd)
      '''
      gcmd = re.sub("waste", "dry", cmd)
      print(cmd)
@@ -192,6 +217,11 @@ def runeachmacrocmd(cmd,dser,kit):
      ps,tt = re.split("_", re.sub("^s", "", cmd))
      sser.write(ps.encode()+"\n".encode())
      time.sleep(float(tt))
+     upublisher(cmd)
+   #a = re.match('justdry Z(.*)F(.*)ZT(.*)T(.*)', cmd)
+   if re.match("^justdry.*",cmd):
+    print("justdrying ... ")
+    touchdry(cmd,taskjob)
    if cmd == "restart":
      cmd = 'mosquitto_pub -t "controllabbot" -m "restart"'
      os.system(cmd)
@@ -402,7 +432,7 @@ def runmacro(dser,kit,sser):
    macroready = putmacrolinestogether(reformatmacro)
    labbotrunning(1)
    for i in macroready:
-    runeachmacrocmd(i,dser,kit)
+    runeachmacrocmd(i,dser,kit,taskjob)
    labbotrunning(0)
    getposition(dser)
 
@@ -709,9 +739,9 @@ def on_message(client, userdata, message):
       gettemperature(dser)
     if re.match('sg[1|2].*',cmd):
       sser.write(re.sub('^s', '', cmd).encode()+"\n".encode())
+      upublisher(cmd)
     if re.match('touch.*',cmd):
-        touchdry(cmd)
-
+      touchdry(cmd)
     if re.match('TG1.*',cmd):
       print("calling the timed position move")
       #movetopos(dser,cmd)
@@ -728,6 +758,7 @@ def on_message(client, userdata, message):
       (v,pvalves,pos) = re.split('-', cmd)
       valves = re.split('\.',pvalves) 
       servo(valves,pos,kit)
+      upublisher(cmd)
     if re.match("snap.*", cmd):
       d = datetime.datetime.today()
       checktm = str(d.year)+str(d.month)+str(f'{d.day:02}')

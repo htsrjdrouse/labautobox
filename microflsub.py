@@ -29,6 +29,9 @@ def writemicrofluidicsjson(microflstatus):
    mjson.write(datar)
    mjson.close()
 
+
+
+
 def upublisher(mesg):
   aa = {}
   ts = time.gmtime()
@@ -214,7 +217,7 @@ microflstatus["heaton"]= 0
 microflstatus["washon"] = 0
 microflstatus["wasteon"] = 0
 microflstatus["pcvon"] = 0
-microflstatus["setlevelval"] = 60
+microflstatus["setlevelval"] = 45
 microflstatus["heatval"] = 100
 writemicrofluidicsjson(microflstatus)
 

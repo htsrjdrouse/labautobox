@@ -60,6 +60,8 @@
  <br>
  <b>Dry time</b> <input type=text name=drypadtime value=<?=$_SESSION['drypadtime']?> size=1>
  <br>
+ <b>Just dry no wash</b> <input type=checkbox name=justdry>
+ <br>
  </div>
  <div class="col-sm-2"> 
  <button type="submit" name=pipettewashsubmitstep class="btn-xs btn-success">Insert step</button>

@@ -13,7 +13,6 @@
 <b>Volume &micro;l</b> <input type=text name=microliter value="<?=$_SESSION['microliter']?>" size=4><br>
   <input type=checkbox name=homesyringe><b>&nbsp;Home</b>
   <br>
-
  </div>
  <div class="col-sm-4"> 
  <b>Flow rate &micro;l/s</b> <input type=text name=syringespeed value="<?=$_SESSION['syringespeed']?>" size=5><br>

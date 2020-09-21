@@ -77,6 +77,13 @@ if (isset($_POST['pipettewashsubmitstep'])){
 	   if(isset($_POST['pipette'.$i])){$pipettelist = $pipettelist."1_";} else { $pipettelist = $pipettelist."0_";}
    }
  }
+ if(isset($_POST['justdry'])){ 
+  $mesg = "just dry function";
+  $justdry = 1;
+ } else {
+  $mesg = "wash pipettes object ".$_POST['pipettewashvol']." microl cycles ".$_POST['pipettwashcycles']." dry ".$_POST['dryafterwash'];
+  $justdry = 0;
+ }
  array_push($_SESSION['labbotprogramjson'], array(
   "tasktype"=>"pipettewash",
   "pipettewashvol"=>$_POST['pipettewashvol'],
@@ -85,11 +92,12 @@ if (isset($_POST['pipettewashsubmitstep'])){
   "feedrate"=>$_POST['feedrate'],
   "object"=>'wash station',
   "zheight"=>$_POST['zheight'],
+  "justdry"=>$justdry,
   "row"=>$_POST['row'],
   "pipettelist"=>$pipettelist,
   "dryafterwash"=>$_POST['dryafterwash'],
   "drypadtime"=>$_POST['drypadtime'],
-  "mesg"=>"wash pipettes object ".$_POST['targetlist']." ".$_POST['pipettewashvol']." microl cycles ".$_POST['pipettwashcycles']." dry ".$_POST['dryafterwash']
+  "mesg"=> $mesg
  ));
  closejson($_SESSION['labbotprogramjson'],'labbot.programs.json');
  header("Location: index.php");
@@ -408,9 +416,15 @@ if (isset($_POST['savemacro'])){
 }
 
 if (isset($_POST['runmacro'])){ 
+ foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
+  if ($tt['name'] == 'drypad'){
+   $coord = $tt;
+  }
+ } 
+ $drypositions = $coord[0]['drypositions'];
  $vvr = preg_split("/\n/", $_POST['macrofiledata']);
  $_SESSION['cmdlist'] = $vvr;
- $prog = array("program"=>$vvr);
+ $prog = array("program"=>$vvr, "drypositions"=>$drypositions, "dryrefnum"=>$_SESSION['dryrefnum']);
  file_put_contents('labbot.programtorun.json', json_encode($prog));
  sleep(1);
  exec('mosquitto_pub -t "labbot" -m "runmacro"');

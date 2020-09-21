@@ -1,4 +1,13 @@
 <? $jsonmicrofl = json_decode(file_get_contents('microfluidics.json'), true);?>
+<? $jsonmonitor = json_decode(file_get_contents('monitor.json'), true);?>
+<? $_SESSION['labbot3d']['tiplist'] = $jsonmonitor['valve']['tiplist'];  ?>
+<? $_SESSION['labbot3d']['valvepos'] = $jsonmonitor['valve']['valvepos']; ?>
+<? $_SESSION['microliter'] = $jsonmonitor['syringe']['microliter']; ?>
+<? $_SESSION['syringespeed'] = $jsonmonitor['syringe']['syringespeed']; ?>
+<? $_SESSION['syringeacceleration'] = $jsonmonitor['syringe']['syringeacceleration']; ?>
+<?=$_SESSION['dryrefnum'] = $jsonmonitor['dryrefnum'];?>
+
+
 
 <? if(isset($_POST['syringesubmitstep'])){
  $_SESSION["microliter"]= $_POST['microliter'];
@@ -156,7 +165,6 @@
  $tiplistst = preg_replace("/.$/", "", $tiplistst);
  $jsonmicrofl['tiplist'] = $tiplist;
  $_SESSION['labbot3d']['tiplist'] = $tiplist; 
- $_SESSION['labbot3d']['editvalvepos'] = 0; 
  $_SESSION['labbot3d']['valvepos'] = $_POST['valvepos'];
  file_put_contents('microfluidics.json', json_encode($jsonmicrofl));
  $jsonmicrofl = json_decode(file_get_contents('microfluidics.json'), true);
@@ -179,7 +187,7 @@
 <?if(!isset($_SESSION['labbot3d']['tiplist'])){ $_SESSION['labbot3d']['tiplist'] = $jsonmicrofl['tiplist']; } ?>
 <table><tr>
 <? for($i=0;$i<8;$i++){ ?>
-<td align=center><?=($i+1)?><br><input type=checkbox class="form-check-input" name="valve<?=($i)?>" <? if ($_SESSION['labbot3d']['tiplist'][$i] == "1"){ echo "checked"; }?>>&nbsp;</td>
+<td align=center><?=($i+1)?><br><input type=checkbox class="form-check-input" name="valve<?=($i)?>" <? if ($jsonmonitor['valve']['tiplist'][$i] == "1"){ echo "checked"; }?>>&nbsp;</td>
 <? } ?>
 </tr></table>
 </div>
@@ -191,20 +199,19 @@
 <b>Valve position</b>
 </div>
 <div class="col-sm-9">
-<? if(!isset($_SESSION['labbot3d']['valvepos'])){$_SESSION['labbot3d']['valvepos'] = "input"; } ?>
-<? if(!isset($_SESSION['labbot3d']['editvalvepos'])){$_SESSION['labbot3d']['editvalvepos'] = 0; } ?>
+<?// if(!isset($_SESSION['labbot3d']['editvalvepos'])){$_SESSION['labbot3d']['editvalvepos'] = 0; } ?>
 <table border=0><tr><td align=center>
 <b><font size=1>Input</font></b><br>
-<input type=radio name=valvepos value=input id=input <? if($_SESSION['labbot3d']['valvepos'] == "input"){?> checked <? } ?>> 
+<input type=radio name=valvepos value=input id=input <? if($jsonmonitor['valve']['valvepos'] == "input"){?> checked <? } ?>> 
 </td><td>&nbsp;&nbsp;</td><td align=center>
 <b><font size=1>Bypass</font></b><br>
-<input type=radio name=valvepos value=bypass id=bypass <? if($_SESSION['labbot3d']['valvepos'] == "bypass"){?> checked <? } ?>>
+<input type=radio name=valvepos value=bypass id=bypass <? if($jsonmonitor['valve']['valvepos'] == "bypass"){?> checked <? } ?>>
 </td><td>&nbsp;&nbsp;</td><td align=center>
 <b><font size=1>Output</font></b><br>
-<input type=radio name=valvepos value=output id=output <? if($_SESSION['labbot3d']['valvepos'] == "output"){?> checked <? } ?>>
+<input type=radio name=valvepos value=output id=output <? if($jsonmonitor['valve']['valvepos'] == "output"){?> checked <? } ?>>
 </td><td>&nbsp;&nbsp;</td><td align=center>
 <b><font size=1>Close</font></b><br>
-<input type=radio name=valvepos value=close id=close <? if($_SESSION['labbot3d']['valvepos'] == "close"){?> checked <? } ?>>
+<input type=radio name=valvepos value=close id=close <? if($jsonmonitor['valve']['valvepos'] == "close"){?> checked <? } ?>>
 </td></tr></table>
 <br>
 <button type="submit" name=govalvepos value="govalvepos"  class="btn btn-primary btn-xs">Go to position</button>
@@ -261,7 +268,10 @@
 <td align=center>
 <br><button type="submit" name=gotowaste value="gotowaste"  class="btn btn-primary btn-xs">Go to waste</button><br>
 </td>
-<td><br><button type="submit" name=gotodry value="gotodry"  class="btn btn-primary btn-xs">Go to dry</button>
+<td>
+<?  if (!(isset($_SESSION['dryrefnum']))){ $_SESSION['dryrefnum'] = 0;}  ?>
+<?=$_SESSION['dryrefnum']?>
+<br><button type="submit" name=gotodry value="gotodry"  class="btn btn-primary btn-xs">Go to dry</button>
 </td></tr>
 </table>
 </form>

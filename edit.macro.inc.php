@@ -23,7 +23,14 @@
 </textarea>
 <br>
 <? if((isset($_SESSION['runmacro']))and($_SESSION['runmacro'] == 1)){ ?>
-//echo "run macro"; 
+<? $pprog = json_decode(file_get_contents('labbot.programtorun.json'), true); ?>
+<? //var_dump($pprog['dryrefnum']);?>
+<? //var_dump($pprog);?>
+<br>
+<?
+$_SESSION['dryrefnum'] = $pprog['dryrefnum'];
+if ($_SESSION['dryrefnum'] == (count($pprog['drypositions'])-1)){ $_SESSION['dryrefnum'] = 0; }
+?>
 <? 
 foreach($prog as $pp){
  $pp = preg_replace("/\r|\n/", "", $pp);

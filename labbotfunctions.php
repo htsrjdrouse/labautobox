@@ -1,4 +1,3 @@
-<? session_start(); ?>
 <? if (!isset($_SESSION['labbotprogramjson'])){
    $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
 } ?>
@@ -122,6 +121,8 @@
  } ?>
 
 <? function pipettewash($cmdlist,$labbotprogramjson){ 
+       
+if ($labbotprogramjson['justdry'] == 0) {  
  foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
   if ($tt['name'] == 'wash station'){
    $coord = $tt;
@@ -168,6 +169,19 @@
     }
    }
   }
+ } else {
+    $labbotprogramjson['object'] = "drypad";
+    foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
+     if ($tt['name'] == 'drypad'){
+      $coord = $tt;
+      }
+     }  
+    array_push($cmdlist,"justdry ". 
+    "Z".($coord['Z'] - $labbotprogramjson['zheight']).
+    "F".$labbotprogramjson['feedrate'].
+    "ZT".$coord['ztrav'].
+    "T".$labbotprogramjson['drypadtime']);
+ }
  return $cmdlist;
  }
 ?>
