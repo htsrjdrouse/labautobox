@@ -53,6 +53,8 @@ def on_message(client, userdata, message):
       #subprocess.Popen(["sudo","python3", "/home/pi/labbot/subscriber.py"]).pid
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/subscriber.py"]).pid
       time.sleep(0.5)
+      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/monitor.py"]).pid
+      time.sleep(0.5)
       #subprocess.Popen(["sudo","python3", "/home/pi/labbot/positiondisplay.py"]).pid
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/positiondisplay.py"]).pid
       time.sleep(0.5)
@@ -66,6 +68,8 @@ def on_message(client, userdata, message):
       print("turning off ... ")
       time.sleep(0.5)
       killproc('microflsub.py')
+      time.sleep(0.5)
+      killproc('monitor.py')
       time.sleep(0.5)
       killproc('positiondisplay.py')
       time.sleep(0.5)

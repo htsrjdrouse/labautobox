@@ -5,7 +5,7 @@
 <? $_SESSION['microliter'] = $jsonmonitor['syringe']['microliter']; ?>
 <? $_SESSION['syringespeed'] = $jsonmonitor['syringe']['syringespeed']; ?>
 <? $_SESSION['syringeacceleration'] = $jsonmonitor['syringe']['syringeacceleration']; ?>
-<?=$_SESSION['dryrefnum'] = $jsonmonitor['dryrefnum'];?>
+<? $_SESSION['dryrefnum'] = $jsonmonitor['dryrefnum'];?>
 
 
 
@@ -176,10 +176,8 @@
 ?>
 
 
-
 <div class="row">
 <form action=<?=$_SERVER['PHP_SELF']?> method=post>
-
 <div class="col-sm-3">
 <b>Select valves</b>
 </div>

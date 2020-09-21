@@ -1,1 +1,1 @@
-{"dryrefnum": "0", "syringe": {"microliter": "100", "syringeacceleration": "20", "syringespeed": "40"}, "valve": {"tiplist": ["1", "0", "0", "1", "0", "1", "1", "1"], "valvepos": "input"}}
+{"dryrefnum": "0", "syringe": {"microliter": "100", "syringeacceleration": "20", "syringespeed": "40"}, "valve": {"tiplist": ["1", "1", "1", "1", "1", "1", "1", "1"], "valvepos": "bypass"}}
