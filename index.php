@@ -57,6 +57,7 @@
  if(isset($_POST['connectsub'])){
   $cmd = 'mosquitto_pub -t "controllabbot" -m "turnon"';
   exec($cmd);
+  sleep(3);
  }
  if(isset($_POST['disconnectsub'])){
   exec("ps aux | grep -i 'subscriber.py' | grep -v grep", $pids);

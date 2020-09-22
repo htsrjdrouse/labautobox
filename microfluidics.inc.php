@@ -77,10 +77,12 @@
   }
  } 
   if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
-  if (!(isset($_SESSION['dryrefnum']))){ $_SESSION['dryrefnum'] = 0;} else { $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1; }
-  $_SESSION['dryrefnum'] = 0;
-  $pcmd = "touch_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."_".($coord['Z'])."_".($coord['ztrav'])."_".$_SESSION['labbotprogram']['feedrate']."_".($_SESSION['drypadtime']);
-  $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  //if (!(isset($_SESSION['dryrefnum']))){ $_SESSION['dryrefnum'] = 0;} else { $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1; }
+ //$pcmd = "touch_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."_".($coord['Z'])."_".($coord['ztrav'])."_".$_SESSION['labbotprogram']['feedrate']."_".($_SESSION['drypadtime']);
+  $pcmd = 'touchdry Z'.$coord['Z'].'F'.$_SESSION['labbotprogram']['feedrate'].'ZT'.($coord['ztrav']).'T'.($_SESSION['drypadtime']);
+
+ $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
+  //echo $cmd.'<br>';
   exec($cmd);
   
 }?>
@@ -156,13 +158,13 @@
  for($i=0;$i<8;$i++){ 
   if(isset($_POST['valve'.$i])){
    array_push($tiplist, 1); 
-   $tiplistst = $tiplistst."1.";
+   $tiplistst = $tiplistst."1_";
   } else { 
-   $tiplistst = $tiplistst."0.";
+   $tiplistst = $tiplistst."0_";
    array_push($tiplist, 0); 
   }
  }
- $tiplistst = preg_replace("/.$/", "", $tiplistst);
+ $tiplistst = preg_replace("/_$/", "", $tiplistst);
  $jsonmicrofl['tiplist'] = $tiplist;
  $_SESSION['labbot3d']['tiplist'] = $tiplist; 
  $_SESSION['labbot3d']['valvepos'] = $_POST['valvepos'];

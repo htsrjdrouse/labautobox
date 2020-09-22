@@ -9,36 +9,38 @@ from adafruit_servokit import ServoKit
 
 #$prog = array("program"=>$vvr, "drypositions"=>$drypositions, "dryrefnum"=>$dryrefnum);
 def touchdry(cmd,taskjob):
-  print("touchdry called")
   #justdry Z9.5F3000ZT0
-  a = re.match('justdry Z(.*)F(.*)ZT(.*)T(.*)', cmd)
+  a = re.match('touchdry Z(.*)F(.*)ZT(.*)T(.*)', cmd)
   z = a.group(1)
   f = a.group(2)
   ztrav= a.group(3)
   t = a.group(4)
-  mcmd = "G1Z"+ztrav+"F"+f
-  print("ztrav "+mcmd)
-  print("time "+t)
-  #print(taskjob['drypositions'])
   dryrefnum = int(taskjob['dryrefnum']) + 1
   if dryrefnum == (len(taskjob['drypositions'])-1): 
       dryrefnum = 0
   taskjob['dryrefnum'] = str(dryrefnum)
-  '''
+  pcvdatar = json.dumps(taskjob)
+  pcv = open('labbot.programtorun.json','w')
+  pcv.write(pcvdatar)
+  pcv.close()
+  mcmd = "G1Z"+ztrav+"F"+f
+  x = str(taskjob['drypositions'][int(taskjob['dryrefnum'])]['x'])
+  y = str(taskjob['drypositions'][int(taskjob['dryrefnum'])]['y'])
   dser.write(mcmd.encode()+"\n".encode())
   mcmd = "G1X"+x+"Y"+y+"F"+f
-  print(mcmd)
+  #print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
   mcmd ="G1Z"+z+"F"+f
-  print(mcmd)
+  #print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
   print(t)
   time.sleep(float(t))  
   mcmd = "G1Z"+ztrav+"F"+f
-  print(mcmd)
+  #print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
   '''
-  upublisher("dryreftrack " + dryrefnum)
+  '''
+  upublisher("dryreftrack " + str(dryrefnum))
 
 def snap(cmd,cameraip):
   d = datetime.datetime.today()
@@ -219,8 +221,8 @@ def runeachmacrocmd(cmd,dser,kit,taskjob):
      time.sleep(float(tt))
      upublisher(cmd)
    #a = re.match('justdry Z(.*)F(.*)ZT(.*)T(.*)', cmd)
-   if re.match("^justdry.*",cmd):
-    print("justdrying ... ")
+   if re.match("^touchdry.*",cmd):
+    print("touchdry ... ")
     touchdry(cmd,taskjob)
    if cmd == "restart":
      cmd = 'mosquitto_pub -t "controllabbot" -m "restart"'
@@ -741,7 +743,10 @@ def on_message(client, userdata, message):
       sser.write(re.sub('^s', '', cmd).encode()+"\n".encode())
       upublisher(cmd)
     if re.match('touch.*',cmd):
-      touchdry(cmd)
+      print("touchdry called")
+      print(cmd)
+      taskjob = readtaskjobjson()
+      touchdry(cmd,taskjob)
     if re.match('TG1.*',cmd):
       print("calling the timed position move")
       #movetopos(dser,cmd)
@@ -756,7 +761,7 @@ def on_message(client, userdata, message):
       #print("can not send a mqtt")
     if re.match("valve.*", cmd):
       (v,pvalves,pos) = re.split('-', cmd)
-      valves = re.split('\.',pvalves) 
+      valves = re.split('_',pvalves) 
       servo(valves,pos,kit)
       upublisher(cmd)
     if re.match("snap.*", cmd):

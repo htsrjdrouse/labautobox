@@ -137,6 +137,11 @@ if (isset($_POST['savetarget'])){
 		  'drypositions'=>$drypositions
 	  ));
   }
+
+ $pprog = json_decode(file_get_contents('labbot.programtorun.json'), true);
+ $npprog = array("program"=>$pprog['program'],"drypositions"=>$drypositions,"dryrefnum"=>"0"); 
+ file_put_contents('labbot.programtorun.json', json_encode($npprog));
+
   if ($_POST['tarname'] == "pipette removal"){ 
 	  $_SESSION['pipettetype'] = $_POST['pipettetype'];
 	  array_push($newd, array('pipettetype'=>$_POST['pipettetype'])); 

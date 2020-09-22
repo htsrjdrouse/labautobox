@@ -176,7 +176,7 @@ if ($labbotprogramjson['justdry'] == 0) {
       $coord = $tt;
       }
      }  
-    array_push($cmdlist,"justdry ". 
+    array_push($cmdlist,"touchdry ". 
     "Z".($coord['Z'] - $labbotprogramjson['zheight']).
     "F".$labbotprogramjson['feedrate'].
     "ZT".$coord['ztrav'].

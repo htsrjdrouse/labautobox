@@ -21,16 +21,13 @@ def writemonitorjson(dat):
    #nx = open('monitor.json')
    #nxdata = json.load(nx)
    #nx.close()
-   print(dat)
+   #print(dat)
    mjson = open('monitor.json','w')
    #print(mm)
    datar = json.dumps(dat, sort_keys=True)
    mjson.write(datar)
    mjson.close()
    return dat
-
-
-
 
 
 
@@ -53,25 +50,25 @@ def establishconnection():
 
 ## mqtt message handler ##
 def on_message(client, userdata, message):
-    print("message received")
+    #print("message received")
     cmd = str(message.payload.decode("utf-8"))
     cmd = re.sub(' --.*', '', cmd)
     if re.match("^sg.*",cmd):
      dat = openmonitorjson()
-     print("dat")
-     print(dat)
-     print("syringe section called")
+     #print("dat")
+     #print(dat)
+     #print("syringe section called")
      aa = re.match('^sg1e(.*)s(.*)a(.*)$', cmd)
-     print(aa.group(1))
+     #print(aa.group(1))
      dat['syringe']['microliter'] = aa.group(1)
      dat['syringe']['syringespeed'] = aa.group(2)
      dat['syringe']['syringeacceleration'] = re.sub('_.*', '', aa.group(3))
-     print(dat)
+     #print(dat)
      dat = writemonitorjson(dat)
     if re.match("^valve.*",cmd):
      dat = openmonitorjson()
      aa = re.match("^valve-(.*)-(.*)$", cmd)
-     dat['valve']['tiplist'] =  re.split("\.", aa.group(1))
+     dat['valve']['tiplist'] =  re.split("_", aa.group(1))
      dat['valve']['valvepos'] = aa.group(2)
      dat = writemonitorjson(dat)
     if re.match("^dryreftrack.*",cmd):
