@@ -158,7 +158,7 @@
  </div>
  <div class="col-sm-3"> 
  <b>Flow rate &micro;l/sec</b> <input type=text name=syringespeed value="<?=$_SESSION['syringespeed']?>" size=5><br>
- <b>Acceleration</b> <input type=text name=syringeacceleration value="<?=$_SESSION['syringespeed']/2?>" size=5><br>
+ <b>Acceleration</b> <input type=text name=syringeacceleration value="<?=$_SESSION['syringeacceleration']?>" size=5><br>
 </td>
  </div>
  <div class="col-sm-2"><b>Time</b><br><input type=text name=syringetime value=<?=$_SESSION['syringetime']?> size=1>
@@ -197,7 +197,7 @@
  <button type="submit" name=gpiosubmitstep class="btn-xs btn-success">Insert step</button>
  </div> 
 </div>
-</form>
+<!--</form> -->
 <div class="row">
  <div class="col-sm-8"> 
  <br>
@@ -223,7 +223,7 @@ $(document).ready(function(){
 });
 </script>
 
-<form action=program.editor.php method=post>
+<!--<form action=program.editor.php method=post>-->
 <div class="row">
  <div class="col-sm-2">
  <b>Camera</b><br><br>
@@ -255,8 +255,10 @@ $(document).ready(function(){
  </div> 
   <? } ?>
 </div>
+<!--
 </form>
 <form action=program.editor.php method=post>
+-->
 <div class="row">
  <? if(!isset($_SESSION['labbot3d']['heatblock1temp'])){ $_SESSION['labbot3d']['heatblock1temp'] = 60; $_SESSION['labbot3d']['heatblock2temp']= 100;} ?>
 
@@ -271,13 +273,13 @@ $(document).ready(function(){
  <button type="submit" name=heatblocksubmitstep class="btn-xs btn-success">Insert step</button>
  </div>
 </div>
-</form>
+<!--</form>-->
 <div class="row">
 <br><br>
 </div>
 
 
-<form action=program.editor.php method=post>
+<!--<form action=program.editor.php method=post>-->
 <div class="row">
  <div class="col-sm-4">
  <?=$types[0][$val['object']]['name']?>

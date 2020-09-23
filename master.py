@@ -78,7 +78,7 @@ def on_message(client, userdata, message):
       killproc('temperaturedisplay.py')
     if cmd == "restart":
       killproc('subscriber.py')
-      time.sleep(2)
+      time.sleep(4)
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/subscriber.py"]).pid
     if cmd == "kill positiondisplay":
       killproc('positiondisplay.py')

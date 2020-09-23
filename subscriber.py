@@ -669,6 +669,7 @@ def whatstheports():
         #print(pport)
         ser = openport(pport)
         ser.write(b"info\n")
+        time.sleep(1)
         a = ser.readlines()
         b = str((a[0].decode()))
         #print(b)

@@ -89,6 +89,8 @@ if (isset($_POST['pipettewashsubmitstep'])){
   "pipettewashvol"=>$_POST['pipettewashvol'],
   "pipettewashtime"=>$_POST['pipettewashtime'],
   "pipettewashcycles"=>$_POST['pipettewashcycles'],
+  "syringespeed"=>$_POST['syringespeed'],
+  "syringeacceleration"=>$_POST['syringeacceleration'],
   "feedrate"=>$_POST['feedrate'],
   "object"=>'wash station',
   "zheight"=>$_POST['zheight'],
