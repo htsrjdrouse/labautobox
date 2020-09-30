@@ -33,6 +33,8 @@ if(isset($_POST['snap'])){
     $_SESSION['labbot3d']['filename'] = $_POST['fname'];
     $date = date('His');
     $cmd = 'mosquitto_pub -h '.$_SESSION['cameraip'].' -t "dcam2" -m "snap '.$_SESSION['labbot3d']['camfocus'].'_'.$_SESSION['labbot3d']['camexposure'].'_'.$_SESSION['labbot3d']['imgdir'].'_'.$_SESSION['labbot3d']['filename'].$date.'"';
+    echo($cmd);
+    echo "<br>";
     exec($cmd);
     sleep(1);
   }
@@ -88,8 +90,6 @@ Filename <input type=text name=fname value="<?=$_SESSION['labbot3d']['filename']
 </div>
 <div class="row">
 <div class="col-sm-5">
-
-<?  //$output = shell_exec("wget --spider -r --no-parent http://192.168.1.89/"); ?>
 <?  $output = shell_exec("sudo ssh pi@".$_SESSION['cameraip']." ls /var/www/html/imaging"); ?>
 <? $ff = (preg_split("/\n/", $output));?><br>
 <? $size = count($ff); ?>

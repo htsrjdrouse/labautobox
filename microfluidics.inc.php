@@ -76,6 +76,7 @@
    $coord = $tt;
   }
  } 
+  $_SESSION['drypadtime'] = $_POST['drypadtime'];
   if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }
   //if (!(isset($_SESSION['dryrefnum']))){ $_SESSION['dryrefnum'] = 0;} else { $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1; }
  //$pcmd = "touch_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['x'])."_".($coord[0]['drypositions'][$_SESSION['dryrefnum']]['y'])."_".($coord['Z'])."_".($coord['ztrav'])."_".$_SESSION['labbotprogram']['feedrate']."_".($_SESSION['drypadtime']);
@@ -269,8 +270,6 @@
 <br><button type="submit" name=gotowaste value="gotowaste"  class="btn btn-primary btn-xs">Go to waste</button><br>
 </td>
 <td>
-<?  if (!(isset($_SESSION['dryrefnum']))){ $_SESSION['dryrefnum'] = 0;}  ?>
-<?=$_SESSION['dryrefnum']?>
 <br><button type="submit" name=gotodry value="gotodry"  class="btn btn-primary btn-xs">Go to dry</button>
 </td></tr>
 </table>

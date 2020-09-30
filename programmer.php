@@ -88,7 +88,7 @@
 
  <div class="col-sm-3">
  <b>Row: </b><select name=row>
-  <? for($i=1;$i<13;$i++){ ?>
+  <? for($i=1;$i<25;$i++){ ?>
   <option value="<?=$i?>"><?=$i?></option>
   <? } ?>
 </select>
@@ -248,7 +248,9 @@ $(document).ready(function(){
 <br>
  </div>
  <div class="col-sm-3">
- <b>Filename</b> <br><input type=text name=fname value="" size=4>
+<b>Filename</b> <br><input type=text name=fname value="<?=$_SESSION['labbot3d']['filename']?>" size=4><br>
+ <b>IP</b> &nbsp;<input type=text name=cameraip value=<?=$_SESSION['cameraip']?> size=7> <br>
+ <b>Folder </b> &nbsp;<input type=text name=location value=<?=$_SESSION['labbot3d']['imgdir']?> size=7> <br><br><br>
  </div>
  <div class="col-sm-2">
  <button type="submit" name=camsubmitstep class="btn-xs btn-success">Insert step</button>

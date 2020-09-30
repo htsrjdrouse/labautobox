@@ -42,22 +42,18 @@ def touchdry(cmd,taskjob):
   '''
   upublisher("dryreftrack " + str(dryrefnum))
 
-def snap(cmd,cameraip):
+def snap(cmd):
   d = datetime.datetime.today()
   checktm = str(d.year)+str(d.month)+str(f'{d.day:02}')
   timestamp = time.strftime('%H%M%S')
-  (snap,plocation,presnap,postsnap) = re.split(" ",cmd)
-  (location,pfilename) = re.split("_", plocation)
-  (filename,predelay,postdelay,focus,exposure) = re.split(" ", pfilename)
-  time.sleep(float(predelay))
-  ccmd = "mosquitto_pub -h "+cameraip+" -t 'dcam2' -m 'snap "+focus+"_"+exposure+"_"+filename+checktm+timestamp+"'"
-  print(ccmd)
+  #snap 192.168.1.89_400_50_09302020070456_htet
+  cmd  = re.sub('^snap ', '', cmd)
+  (cameraip,focus,exposure,location,fname) = re.split("_",cmd)
+  time.sleep(1)
+  #ccmd = "mosquitto_pub -h "+cameraip+" -t 'dcam2' -m 'snap "+focus+"_"+exposure+"_"+filename+checktm+timestamp+"'"
+  ccmd = "mosquitto_pub -h "+cameraip+" -t 'dcam2' -m 'snap "+focus+"_"+exposure+"_"+location+"_"+fname+timestamp+"'"
+  #print(ccmd)
   os.system(ccmd)
-  time.sleep(float(postdelay))
-  cccmd = "scp pi@"+cameraip+":\/home\/pi\/"+filename+checktm+timestamp+".jpg \/var\/www\/html\/labbot\/imaging\/"+location
-  #print(cccmd)
-  time.sleep(float(postsnap))
-  os.system(cccmd)
 
 
 
@@ -197,7 +193,8 @@ def runeachmacrocmd(cmd,dser,kit,taskjob):
      upublisher(cmd)
    if re.match("^snap.*",cmd):
      upublisher(cmd)
-     snap(cmd,mesg['cameraip'])
+     print("snap is called")
+     snap(cmd)
    if re.match("^valve.*",cmd):
      print(cmd)
      (v,pvalves,pos) = re.split('-', cmd)
@@ -744,8 +741,8 @@ def on_message(client, userdata, message):
       sser.write(re.sub('^s', '', cmd).encode()+"\n".encode())
       upublisher(cmd)
     if re.match('touch.*',cmd):
-      print("touchdry called")
-      print(cmd)
+      #print("touchdry called")
+      #print(cmd)
       taskjob = readtaskjobjson()
       touchdry(cmd,taskjob)
     if re.match('TG1.*',cmd):
@@ -766,6 +763,7 @@ def on_message(client, userdata, message):
       servo(valves,pos,kit)
       upublisher(cmd)
     if re.match("snap.*", cmd):
+      print("snap called here")
       d = datetime.datetime.today()
       checktm = str(d.year)+str(d.month)+str(f'{d.day:02}')
       timestamp = time.strftime('%H%M%S')
@@ -777,12 +775,12 @@ def on_message(client, userdata, message):
       nx.close()
       #ccmd = "ssh pi@192.168.1.85 raspistill -w 320 -h 240 -ex sports --nopreview --timeout 1 -o \/home\/pi\/"+checktm+timestamp+".jpg"
       ccmd = "mosquitto_pub -h "+mesg['cameraip']+" -t 'dcam2' -m 'snap "+focus+"_"+exposure+"_"+checktm+timestamp+"'"
-      #print(ccmd)
+      print(ccmd)
       os.system(ccmd)
       time.sleep(1)
-      cccmd = "scp pi@"+mesg['cameraip']+":\/home\/pi\/"+focus+"_"+exposure+"_"+checktm+timestamp+".jpg \/var\/www\/html\/labbot\/imaging\/"+location
+      #cccmd = "scp pi@"+mesg['cameraip']+":\/home\/pi\/"+focus+"_"+exposure+"_"+checktm+timestamp+".jpg \/var\/www\/html\/labbot\/imaging\/"+location
       #print(cccmd)
-      os.system(cccmd)
+      #os.system(cccmd)
 
 ports = whatstheports()
 dser = openport(ports['smoothie'])

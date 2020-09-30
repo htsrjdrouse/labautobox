@@ -99,8 +99,14 @@
    $_SESSION['dryrefnum'] = $_SESSION['dryrefnum'] + 1;
    if($_SESSION['dryrefnum'] == count($coord[0]['drypositions'])-1){$_SESSION['dryrefnum'] = 0;}
   } else {
-   array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".($coord['posy']+($coord['wellrowsp']*($labbotprogramjson['row']-1))+$coord['marginy'] + ($coord['shimy']/$labbotprogramjson['row'])*($labbotprogramjson['row']-1))."F".$labbotprogramjson['feedrate']);
-  }
+   if ($labbotprogramjson['row']> 1){
+   //array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".($coord['posy']+($coord['wellrowsp']*($labbotprogramjson['row']-1))+$coord['marginy'] + ($coord['shimy']/$labbotprogramjson['row']-1)*($labbotprogramjson['row']-1))."F".$labbotprogramjson['feedrate']);
+   array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".(($coord['posy'])+$coord['marginy']+$coord['wellrowsp']*($labbotprogramjson['row']-1))."F".$labbotprogramjson['feedrate']);
+   } else {
+   array_push($cmdlist, "G1X".($coord['posx']+$coord['marginx']+(($coord['shimx']/$coord['wellrow'])*($labbotprogramjson['row']-1)))."Y".(($coord['posy'])+$coord['marginy'])."F".$labbotprogramjson['feedrate']);
+
+   }
+   }
   //echo "G1 Z".($coord['ztrav']-$labbotprogramjson['zheight'])." F".$labbotprogramjson['feedrate']."<br>";
   array_push($cmdlist,"G1Z".($coord['Z'] - $labbotprogramjson['zheight'])."F".$labbotprogramjson['feedrate']);
   return $cmdlist; 
@@ -207,8 +213,8 @@ if ($labbotprogramjson['justdry'] == 0) {
 } ?>
 
 <? function camera($cmdlist,$labbotprogramjson){ 
- $line = "snap ".$labbotprogramjson['location']."_".$labbotprogramjson['fname']." ".$labbotprogramjson['campredelay']." ".$labbotprogramjson['campostdelay'];
- $line = $line." ".$labbotprogramjson['camfocus']." ".$labbotprogramjson['camexposure'];
+ //mosquitto_pub -h 192.168.1.89 -t "dcam2" -m "snap 400_50_09302020070456_073321"
+ $line = "snap ".$labbotprogramjson['cameraip']."_".$labbotprogramjson['camfocus']."_".$labbotprogramjson['camexposure']."_".$labbotprogramjson['location']."_".$labbotprogramjson['fname'];
  array_push($cmdlist,$line);
  return $cmdlist;
 } ?>

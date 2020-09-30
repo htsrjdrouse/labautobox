@@ -151,7 +151,7 @@ if (isset($_POST['motionsubmitstep'])){
   "feedrate"=>$_POST['feedrate'],
   "row"=>$_POST['row'],
   "zheight"=>$_POST['zheight'],
-  "mesg"=>"motion ".$_POST['targetlist']." zh ".$_POST['zheight']." row ".$_POST['row']." F".$_POST['feedrate']
+  "mesg"=>"motion ".$_POST['targetlist']." zh ".$_POST['zheight']." row ".($_POST['row'])." F".$_POST['feedrate']
  ));
  closejson($_SESSION['labbotprogramjson'],'labbot.programs.json');
  header("Location: index.php");
@@ -263,15 +263,17 @@ if (isset($_POST['camsubmitstep'])){
  if(!isset($_SESSION['labbotprogramjson'])){
   $_SESSION['labbotprogramjson'] = array();
  }
+ $_SESSION['labbot3d']['filename'] = $_POST['fname'];
  array_push($_SESSION['labbotprogramjson'], array(
   "tasktype"=>"camera",
-  "location"=>$_SESSION['labbot3d']['imgdir'],
+  "location"=>$_POST['location'],
+  "cameraip"=>$_POST['cameraip'],
   "fname"=>$_POST['fname'],
   "campredelay"=>$_POST['campredelay'],
   "campostdelay" => $_POST['campostdelay'],
   "camexposure" => $_POST['camexposure'],
   "camfocus" => $_POST['camfocus'],
-  "mesg" => "camsnap ".$_SESSION['labbot3d']['imgdir']."_".$_POST['fname']." ".$_POST['campredelay']." ".$_POST['campostdelay']. " ".$_POST['camfocus']." ".$_POST['camexposure']
+  "mesg" => "camsnap ".$_POST['cameraip']."_".$_POST['location']."_".$_POST['fname']." ".$_POST['campredelay']." ".$_POST['campostdelay']. " ".$_POST['camfocus']." ".$_POST['camexposure']
  ));
  closejson($_SESSION['labbotprogramjson'],'labbot.programs.json');
  header("Location: index.php");
