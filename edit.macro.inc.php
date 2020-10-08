@@ -31,6 +31,7 @@
 $_SESSION['dryrefnum'] = $pprog['dryrefnum'];
 if ($_SESSION['dryrefnum'] == (count($pprog['drypositions'])-1)){ $_SESSION['dryrefnum'] = 0; }
 ?>
+
 <? 
 foreach($prog as $pp){
  $pp = preg_replace("/\r|\n/", "", $pp);

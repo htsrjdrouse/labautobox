@@ -402,19 +402,23 @@ if (isset($_POST['editmacro'])){
  if ($_POST['restart']){
    array_push($cmdlist,'restart');
  }
- $cc = array("cmdlist"=>$cmdlist);
+ //$cc = array("cmdlist"=>$cmdlist);
+ $prog = array("program"=>$cmdlist, "drypositions"=>$_SESSION['drypositions'], "dryrefnum"=>$_SESSION['dryrefnum']);
  $_SESSION['cmdlist'] = $cmdlist;
  $_SESSION['labbot']['editprogram'] = 1;
  $_SESSION['labbot']['view'] = 'editmacro';
- file_put_contents('labbot.programtorun.json', json_encode($cmdlist));
+ file_put_contents('labbot.programtorun.json', json_encode($prog));
  header("Location: index.php");
 }
 
 
 if (isset($_POST['savemacro'])){ 
  $vvr = preg_split("/\n/", $_POST['macrofiledata']);
+ //print_r($vvr);
+ //echo "<br>--<br>";
  $_SESSION['cmdlist'] = $vvr;
- $prog = array("program"=>$vvr);
+ $prog = array("program"=>$vvr, "drypositions"=>$_SESSION['drypositions'], "dryrefnum"=>$_SESSION['dryrefnum']);
+ //print_r($prog);
  file_put_contents('labbot.programtorun.json', json_encode($prog));
  header("Location: index.php");
 }
@@ -431,10 +435,10 @@ if (isset($_POST['runmacro'])){
  $prog = array("program"=>$vvr, "drypositions"=>$drypositions, "dryrefnum"=>$_SESSION['dryrefnum']);
  file_put_contents('labbot.programtorun.json', json_encode($prog));
  sleep(1);
- exec('mosquitto_pub -t "labbot" -m "runmacro"');
+ exec('mosquitto_pub -t "controllabbot" -m "run runmacro"');
  //$_SESSION['labbot']['view'] = 'logger';
  $_SESSION['runmacro'] = 1;
- header("Location: index.php");
+ header("Location: logger.php");
 }
 
 function displaymacro($cmd){

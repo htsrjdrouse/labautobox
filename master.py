@@ -9,6 +9,46 @@ import sys
 import psutil
 
 
+
+def whatstheports():
+ output = str(subprocess.check_output("python3 -m serial.tools.list_ports -v", shell=True))
+ oo = re.split('/dev', output)
+ ports = {}
+ for i in oo:
+    if re.match('^.*Smoothie.*', i):
+        port = re.match('^.*tty(.*) .*', i)
+        ports['smoothie'] = re.split(' ', port.group(1))[0]
+    if re.match('^.*Arduino Micro.*', i):
+        port = re.match('^.*tty(.*) .*', i)
+        #ports['microfluidics'] = re.split(' ',port.group(1))[0]
+        pport = re.split(' ', port.group(1))[0]
+        #print(pport)
+        ser = openport(pport)
+        ser.write(b"info\n")
+        time.sleep(1)
+        a = ser.readlines()
+        b = str((a[0].decode()))
+        #print(b)
+        if re.match("multisteppe.*",b):
+            ports['syringe'] = pport
+        if re.match("wash_dry_pcv_electrocaloric_kill_stepper_valv.*", b):
+            ports['microfluidics'] = pport
+        ser.close()
+ return ports
+
+
+def openport(prt):
+  try:
+   ser = serial.Serial("/dev/tty"+prt, 115200, timeout=0.2)
+   time.sleep(0.5)
+  except:
+   print("its not connecting")
+  return ser
+
+
+
+
+
 def killproc(script):
  process = subprocess.Popen("ps aux | grep "+script,shell=True,stdout=subprocess.PIPE)
  stdout_list = process.communicate()[0].decode()
@@ -51,7 +91,7 @@ def on_message(client, userdata, message):
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/microflsub.py"]).pid
       time.sleep(0.5)
       #subprocess.Popen(["sudo","python3", "/home/pi/labbot/subscriber.py"]).pid
-      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/subscriber.py"]).pid
+      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/interactive.py",ports['smoothie'],ports['syringe']]).pid
       time.sleep(0.5)
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/monitor.py"]).pid
       time.sleep(0.5)
@@ -64,7 +104,11 @@ def on_message(client, userdata, message):
       #subprocess.Popen(["sudo","python3", "/home/pi/labbot/temperaturedisplay.py"]).pid
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/temperaturedisplay.py"]).pid
     if re.match("^turnoff.*", cmd):
-      killproc('subscriber.py')
+      try:
+       killproc('runmacro.py')
+      except:
+       pass
+      killproc('interactive.py')
       print("turning off ... ")
       time.sleep(0.5)
       killproc('microflsub.py')
@@ -77,9 +121,9 @@ def on_message(client, userdata, message):
       time.sleep(0.5)
       killproc('temperaturedisplay.py')
     if cmd == "restart":
-      killproc('subscriber.py')
-      time.sleep(4)
-      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/subscriber.py"]).pid
+      killproc('interactive.py')
+      time.sleep(1)
+      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/interactive.py",ports['smoothie'],ports['syringe']]).pid
     if cmd == "kill positiondisplay":
       killproc('positiondisplay.py')
     if cmd == "run positiondisplay":
@@ -92,10 +136,18 @@ def on_message(client, userdata, message):
       killproc('temperaturedisplay.py')
     if cmd == "run temperaturedisplay":
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/temperaturedisplay.py"]).pid
+    if cmd == "run interactive":
+      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/interactive.py",ports['smoothie'],ports['syringe']]).pid
+    if cmd == "run runmacro":
+      print("run macro")
+      killproc('interactive.py')
+      time.sleep(1)
+      print("sudo python3 /var/www/html/labautobox/runmacro.py "+ports['smoothie']+" "+ports['syringe'])
+      subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/runmacro.py",ports['smoothie'],ports['syringe']]).pid
 
 
 
-
+ports = whatstheports()
 client = establishconnection()
 
 

@@ -6,7 +6,7 @@ import numpy as np
 import json
 import operator
 from adafruit_servokit import ServoKit
-
+import sys
 
 
 
@@ -101,145 +101,6 @@ def justdryparser(cmdstr,dser):
   a =re.match('^justdry X(.*)Y(.*)Z(.*)F(.*)ZT(.*)I(.*)$', cmdstr) 
   gcodecmd = 'G1Z'+a.group(5)+'F'.a.group(4)
   dser.write(gcodecmd.encode()+"\n".encode())
-
-#runeachmacrocmd(i,dser,aser)
-def runeachmacrocmd(cmd,dser,kit,taskjob):
-  nx = open('nx.imgdataset.json')
-  mesg = json.load(nx)
-  nx.close()
-  sim = 0
-  print(cmd)
-  if len(cmd)>0:
-   if re.match("^G1",cmd):
-    gss = re.split("_", cmd)
-    gcodecmd = gss[0]
-    tme = gss[1]
-    if float(tme) < 0.2:
-      tme = str(0.2)
-    if sim == 0:
-     upublisher(cmd)
-     #sersmoothie.readlines()
-     #print(gcodecmd)
-     #print(tme)
-     dser.write(gcodecmd.encode()+"\n".encode())
-     time.sleep(float(tme))
-     #gg =dser.readlines()
-    else:
-     pass
-     #print(gcodecmd)
-     #print(tme)
-   if re.match("^G28",cmd):
-    gss = re.split("_", cmd)
-    gcodecmd = gss[0]
-    tme = gss[1]
-    print("sim is"+str(sim))
-    if sim == 0:
-     upublisher(cmd)
-     #print(gcodecmd)
-     #print(tme)
-     dser.write(gcodecmd.encode()+"\n".encode())
-     time.sleep(float(tme))
-     #gg =dser.readlines()
-    else:
-     pass
-     #print(gcodecmd)
-     #print(tme)
-   if re.match("^M114",cmd):
-    #print("position is called")
-    gg = getposition(dser)
-    upublisher(cmd)
-   if re.match("^wash.*", cmd):
-     pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
-     os.system(pcmd)
-     upublisher(cmd)
-     '''
-     acmd = cmd
-     if re.match("^.*_.*$", acmd):
-        (pcmd, tme) = re.split("_", acmd)
-        aser.write(pcmd.encode()+"\n".encode())
-        time.sleep(float(tme))
-     else:
-        aser.write(cmd.encode()+"\n".encode())
-     upublisher(cmd)
-     '''
-   if re.match("^pcv.*", cmd):
-     pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
-     os.system(pcmd)
-     upublisher(cmd)
-     '''
-     acmd = cmd
-     if re.match("^.*_.*$", acmd):
-        (pcmd, tme) = re.split("_", acmd)
-        aser.write(pcmd.encode()+"\n".encode())
-        time.sleep(float(tme))
-     else:
-        aser.write(cmd.encode()+"\n".encode())
-     upublisher(cmd)
-     '''
-   if re.match("^waste.*", cmd):
-     pcmd = 'mosquitto_pub -t "labbotmicrofl" -m "'+cmd+'"'
-     os.system(pcmd)
-     upublisher(cmd)
-     '''
-     gcmd = re.sub("waste", "dry", cmd)
-     print(cmd)
-     if re.match("^.*_.*$", gcmd):
-        (pcmd, tme) = re.split("_", gcmd)
-        aser.write(pcmd.encode()+"\n".encode())
-        time.sleep(float(tme))
-     else:
-        aser.write(gcmd.encode()+"\n".encode())
-     upublisher(cmd)
-     '''
-   if re.match("^//",cmd):
-     upublisher(cmd)
-   if re.match("^snap.*",cmd):
-     upublisher(cmd)
-     print("snap is called")
-     snap(cmd)
-   if re.match("^valve.*",cmd):
-     print(cmd)
-     (v,pvalves,pos) = re.split('-', cmd)
-     valves = re.split('_',pvalves) 
-     #print(valves)
-     #print(pos)
-     servo(valves,pos,kit)
-     upublisher(cmd)
-   if re.match("blueledon",cmd):
-     #dser.write(b'M106 P0 I1 F25000 \n')
-     dser.write("M106 P0 I1 F25000\n".encode())
-   if re.match("blueledoff",cmd):
-     #dser.write(b'M106 P0 I0 F25000 \n')
-     dser.write("M106 P0 I0 F25000\n".encode())
-   if re.match("M104.*",cmd):
-     #dser.write(b'M106 P0 I0 F25000 \n')
-     dser.write(cmd.encode()+"\n".encode())
-   if re.match("^sg.*",cmd):
-     ps,tt = re.split("_", re.sub("^s", "", cmd))
-     sser.write(ps.encode()+"\n".encode())
-     time.sleep(float(tt))
-     upublisher(cmd)
-   #a = re.match('justdry Z(.*)F(.*)ZT(.*)T(.*)', cmd)
-   if re.match("^touchdry.*",cmd):
-    print("touchdry ... ")
-    touchdry(cmd,taskjob)
-   if cmd == "restart":
-     cmd = 'mosquitto_pub -t "controllabbot" -m "restart"'
-     os.system(cmd)
-  
-
-
-def putmacrolinestogether(reformatmacro):
- macrorunready = []
- for i in reformatmacro:
-  if isinstance(i, list):
-   for j in i:
-    macrorunready.append(j)
-  else:
-   macrorunready.append(i)
- return macrorunready
-
-
 
 def tmecalc(gcodebatch):	
         #mesg = readnxjson()
@@ -419,24 +280,6 @@ def writeschedularjson(dat):
   pcv.write(pcvdatar)
   pcv.close()
 
-def runmacro(dser,kit,sser):
-   coordlog = {}
-   coordlog['X'] =[]
-   coordlog['Y'] =[]
-   coordlog['Z'] =[]
-   coordlog['E'] =[]
-   #resets the schedular
-   writeschedularjson(coordlog)
-   taskjob = readtaskjobjson()
-   reformatmacro = gcodesplitter(taskjob['program']) 
-   #this function is the problem
-   macroready = putmacrolinestogether(reformatmacro)
-   labbotrunning(1)
-   for i in macroready:
-    runeachmacrocmd(i,dser,kit,taskjob)
-   labbotrunning(0)
-   getposition(dser)
-
 def readschedularjson():
   pcv = open('schedular.json')
   pcvdata = json.load(pcv)
@@ -551,51 +394,10 @@ def gettemperature(dser):
 
 
 
-'''
-# This one is for the duet
-def getposition(dser):
- dser.write(b'M114\n')
- pos = dser.readlines()
- #pos = dser.readlines().decode()
- #['X:0.000 Y:0.000 Z:0.000 E:0.000 E0:0.0 E1:0.0 E2:0.0 E3:0.0 E4:0.0 E5:0.0 E6:0.0 E7:0.0 E8:0.0 Count 0 0 0 Machine 0.000 0.000 0.000 Bed comp 0.000\n', b'ok\n']
- lbpos = {}
- for i in pos:
-     i = i.decode()
-     if re.match('^X:.*Y:.*Z:.*E.*', i):
-         bb = re.match('^X:(.*) Y:(.*) Z:(.*) E:(.*) E0.*', i)
-         lbpos['X'] = float(bb.group(1))
-         lbpos['Y'] = float(bb.group(2))
-         lbpos['Z'] = float(bb.group(3))
-         lbpos['E'] = float(bb.group(4))
- lbposdatar = json.dumps(lbpos)
- pcmd = 'X'+str(lbpos['X'])+' Y'+str(lbpos['Y'])+' Z'+str(lbpos['Z'])+' E'+str(lbpos['E'])
- cmd = 'mosquitto_pub -t "testtopic" -m "'+pcmd+'"'
- os.system(cmd)
- nx = open('nx.imgdataset.json')
- nxdata = json.load(nx)
- nx.close()
- if re.match('^.*F', nxdata['smoothielastcommand']):
-     ff = re.match('^.*F(.*)', nxdata['smoothielastcommand'])
-     feed = ff.group(1)
- else:
-     feed = nxdata['xyjogfeed']
- nxdata['smoothielastcommand'] = 'G1X'+str(lbpos['X'])+'Y'+str(lbpos['Y'])+'Z'+str(lbpos['Z'])+'F'+feed
- nxdata['currcoord']['X'] = lbpos['X'];
- nxdata['currcoord']['Y'] = lbpos['Y'];
- nxdata['currcoord']['Z'] = lbpos['Z'];
- nxdata['currcoord']['E'] = lbpos['E'];
- nxdatar = json.dumps(nxdata)
- nx = open('nx.imgdataset.json','w')
- nx.write(nxdatar)
- nx.close()
- return pos
-'''
-
 # This one is for the smoothie
 def getposition(dser):
  dser.write(b'M114\n')
  pos = dser.readlines()
- print(pos)
  #[b'ok C: X:0.0000 Y:0.0000 Z:0.0000 E:0.000 \r\n']
  #pos = dser.readlines().decode()
  #['X:0.000 Y:0.000 Z:0.000 E:0.000 E0:0.0 E1:0.0 E2:0.0 E3:0.0 E4:0.0 E5:0.0 E6:0.0 E7:0.0 E8:0.0 Count 0 0 0 Machine 0.000 0.000 0.000 Bed comp 0.000\n', b'ok\n']
@@ -681,13 +483,10 @@ def whatstheports():
  return ports
 
 
-
-
-
 def openport(prt):
   try:
    ser = serial.Serial("/dev/tty"+prt, 115200, timeout=0.2)
-   time.sleep(2)
+   time.sleep(0.5)
   except:
    print("its not connecting")
   return ser
@@ -709,9 +508,6 @@ def getipaddr(dser):
 ## mqtt message handler ##
 def on_message(client, userdata, message):
     cmd = str(message.payload.decode("utf-8"))
-    print(dser)
-    print(sser)
-    print(cmd)
     if re.match("^G[1|28].*", cmd):
       coord = jogcoordparser(cmd)
       labbotrunning(1)
@@ -734,7 +530,6 @@ def on_message(client, userdata, message):
       except:
        pass
     if cmd == "M114":
-      print("m114 called")
       getposition(dser)
     if cmd == "getduetip":
       getipaddr(dser)
@@ -799,11 +594,18 @@ def on_message(client, userdata, message):
       #print(cccmd)
       #os.system(cccmd)
 
-ports = whatstheports()
-dser = openport(ports['smoothie'])
-sser = openport(ports['syringe'])
-print(dser)
-print(sser)
+#ports = whatstheports()
+#dser = openport(ports['smoothie'])
+#sser = openport(ports['syringe'])
+#smoothie = "ACM2"
+#syringe = "ACM1"
+
+#python3 interactive.py ACM2 ACM1
+
+smoothie = sys.argv[1]
+syringe = sys.argv[2]
+dser = openport(smoothie)
+sser = openport(syringe)
 kit = servoset()
 getposition(dser)
 

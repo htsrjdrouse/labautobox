@@ -6,6 +6,47 @@ import numpy as np
 import json
 import operator
 from adafruit_servokit import ServoKit
+import sys
+
+
+
+
+
+
+
+def jogcoordparser(strr):
+ coord = {}
+ E = 0
+ X = 0
+ Y = 0
+ Z = 0
+ if re.match('^.*X|x',strr):
+  px = re.match('^.*[X|x](.*)', strr)
+  x = re.sub('[ |Y|y|Z|z|F|f|E|e].*', '', px.group(1))
+  coord['X'] = float(x)
+ if re.match('^.*Y|y',strr):
+  py = re.match('^.*[Y|y](.*)', strr)
+  y = re.sub('[ |X|x|Z|z|F|f|E|e].*', '', py.group(1))
+  coord['Y'] = float(y)
+ if re.match('^.*Z|z',strr):
+  pz = re.match('^.*[Z|z](.*)', strr)
+  z = re.sub('[ |X|x|Y|y|F|f|E|e].*', '', pz.group(1))
+  coord['Z'] = float(z)
+ if re.match('^.*E|e',strr):
+  pe = re.match('^.*[E|e](.*)', strr)
+  e = re.sub('[ |X|x|Y|y|F|f|].*', '', pe.group(1))
+  coord['E'] = float(e)
+ if re.match('^.*F|f',strr):
+  pf = re.match('^.*[F|f](.*)', strr)
+  f = re.sub('[ |X|x|Y|y|Z|z|].*', '', pf.group(1))
+  coord['F'] = int(f)
+ return coord
+
+
+
+
+
+
 
 
 
@@ -42,6 +83,8 @@ def touchdry(cmd,taskjob):
   mcmd = "G1Z"+ztrav+"F"+f
   #print(mcmd)
   dser.write(mcmd.encode()+"\n".encode())
+  '''
+  '''
   upublisher("dryreftrack " + str(dryrefnum))
 
 def snap(cmd):
@@ -436,6 +479,7 @@ def runmacro(dser,kit,sser):
     runeachmacrocmd(i,dser,kit,taskjob)
    labbotrunning(0)
    getposition(dser)
+   upublisher("<a href=index.php>Finished</a>")
 
 def readschedularjson():
   pcv = open('schedular.json')
@@ -461,57 +505,6 @@ def upublisher(mesg):
      cmd = "mosquitto_pub  -t 'logger' -m '"+yy+"'" 
      os.system(cmd) 
   '''
-
-
-def jogcoordparser(strr):
- coord = {}
- E = 0
- X = 0
- Y = 0
- Z = 0
- if re.match('^.*X|x',strr):
-  px = re.match('^.*[X|x](.*)', strr)
-  x = re.sub('[ |Y|y|Z|z|F|f|E|e].*', '', px.group(1))
-  coord['X'] = float(x)
- if re.match('^.*Y|y',strr):
-  py = re.match('^.*[Y|y](.*)', strr)
-  y = re.sub('[ |X|x|Z|z|F|f|E|e].*', '', py.group(1))
-  coord['Y'] = float(y)
- if re.match('^.*Z|z',strr):
-  pz = re.match('^.*[Z|z](.*)', strr)
-  z = re.sub('[ |X|x|Y|y|F|f|E|e].*', '', pz.group(1))
-  coord['Z'] = float(z)
- if re.match('^.*E|e',strr):
-  pe = re.match('^.*[E|e](.*)', strr)
-  e = re.sub('[ |X|x|Y|y|F|f|].*', '', pe.group(1))
-  coord['E'] = float(e)
- if re.match('^.*F|f',strr):
-  pf = re.match('^.*[F|f](.*)', strr)
-  f = re.sub('[ |X|x|Y|y|Z|z|].*', '', pf.group(1))
-  coord['F'] = int(f)
- return coord
-
-
-
-
-def coordparser(strr):
- coord = {}
- X = 0
- Y = 0
- Z = 0
- if re.match('^.*X|x',strr):
-  px = re.match('^.*[X|x](.*)', strr)
-  x = re.sub('[ |Y|y|Z|z|F|f|E|e].*', '', px.group(1))
-  coord['X'] = float(x)
- if re.match('^.*Y|y',strr):
-  py = re.match('^.*[Y|y](.*)', strr)
-  y = re.sub('[ |X|x|Z|z|F|f|E|e].*', '', py.group(1))
-  coord['Y'] = float(y)
- if re.match('^.*Z|z',strr):
-  pz = re.match('^.*[Z|z](.*)', strr)
-  z = re.sub('[ |X|x|Y|y|F|f|E|e].*', '', pz.group(1))
-  coord['Z'] = float(z)
- return coord
 
 
 
@@ -551,51 +544,11 @@ def gettemperature(dser):
 
 
 
-'''
-# This one is for the duet
-def getposition(dser):
- dser.write(b'M114\n')
- pos = dser.readlines()
- #pos = dser.readlines().decode()
- #['X:0.000 Y:0.000 Z:0.000 E:0.000 E0:0.0 E1:0.0 E2:0.0 E3:0.0 E4:0.0 E5:0.0 E6:0.0 E7:0.0 E8:0.0 Count 0 0 0 Machine 0.000 0.000 0.000 Bed comp 0.000\n', b'ok\n']
- lbpos = {}
- for i in pos:
-     i = i.decode()
-     if re.match('^X:.*Y:.*Z:.*E.*', i):
-         bb = re.match('^X:(.*) Y:(.*) Z:(.*) E:(.*) E0.*', i)
-         lbpos['X'] = float(bb.group(1))
-         lbpos['Y'] = float(bb.group(2))
-         lbpos['Z'] = float(bb.group(3))
-         lbpos['E'] = float(bb.group(4))
- lbposdatar = json.dumps(lbpos)
- pcmd = 'X'+str(lbpos['X'])+' Y'+str(lbpos['Y'])+' Z'+str(lbpos['Z'])+' E'+str(lbpos['E'])
- cmd = 'mosquitto_pub -t "testtopic" -m "'+pcmd+'"'
- os.system(cmd)
- nx = open('nx.imgdataset.json')
- nxdata = json.load(nx)
- nx.close()
- if re.match('^.*F', nxdata['smoothielastcommand']):
-     ff = re.match('^.*F(.*)', nxdata['smoothielastcommand'])
-     feed = ff.group(1)
- else:
-     feed = nxdata['xyjogfeed']
- nxdata['smoothielastcommand'] = 'G1X'+str(lbpos['X'])+'Y'+str(lbpos['Y'])+'Z'+str(lbpos['Z'])+'F'+feed
- nxdata['currcoord']['X'] = lbpos['X'];
- nxdata['currcoord']['Y'] = lbpos['Y'];
- nxdata['currcoord']['Z'] = lbpos['Z'];
- nxdata['currcoord']['E'] = lbpos['E'];
- nxdatar = json.dumps(nxdata)
- nx = open('nx.imgdataset.json','w')
- nx.write(nxdatar)
- nx.close()
- return pos
-'''
 
 # This one is for the smoothie
 def getposition(dser):
  dser.write(b'M114\n')
  pos = dser.readlines()
- print(pos)
  #[b'ok C: X:0.0000 Y:0.0000 Z:0.0000 E:0.000 \r\n']
  #pos = dser.readlines().decode()
  #['X:0.000 Y:0.000 Z:0.000 E:0.000 E0:0.0 E1:0.0 E2:0.0 E3:0.0 E4:0.0 E5:0.0 E6:0.0 E7:0.0 E8:0.0 Count 0 0 0 Machine 0.000 0.000 0.000 Bed comp 0.000\n', b'ok\n']
@@ -634,26 +587,6 @@ def getposition(dser):
 
 
 
-#Establish a connection to MQTT
-def establishconnection():
-      ### mqtt ###
-      broker_address="localhost" 
-      print("creating new instance")
-      client = mqtt.Client("P1") #create new instance
-      client.on_message=on_message #attach function to callback
-      print("connecting to broker")
-      client.connect(broker_address) #connect to broker
-      print("Subscribing to topic","labbot")
-      client.subscribe("labbot")
-      print("ok its subscribed")
-      # Continue the network loop
-      client.loop_forever()
-      return client
-
-
-
-
-
 def whatstheports():
  output = str(subprocess.check_output("python3 -m serial.tools.list_ports -v", shell=True))
  oo = re.split('/dev', output)
@@ -669,7 +602,7 @@ def whatstheports():
         #print(pport)
         ser = openport(pport)
         ser.write(b"info\n")
-        time.sleep(1)
+        time.sleep(0.5)
         a = ser.readlines()
         b = str((a[0].decode()))
         #print(b)
@@ -687,139 +620,22 @@ def whatstheports():
 def openport(prt):
   try:
    ser = serial.Serial("/dev/tty"+prt, 115200, timeout=0.2)
-   time.sleep(2)
+   time.sleep(0.5)
   except:
    print("its not connecting")
   return ser
 
 
-def getipaddr(dser):
-   #print("this is called")
-   resp = dser.readlines()
-   dser.write(b'M587\n')
-   resp = dser.readlines()
-   rr = {'resp':str(resp[1])}
-   #print(resp)
-   duetip = open('duet.ip.json','w')
-   datar = json.dumps(rr, sort_keys=True)
-   duetip.write(datar)
-   duetip.close()
+ddser = (sys.argv[1])
+ssser = (sys.argv[2])
 
-
-## mqtt message handler ##
-def on_message(client, userdata, message):
-    cmd = str(message.payload.decode("utf-8"))
-    print(dser)
-    print(sser)
-    print(cmd)
-    if re.match("^G[1|28].*", cmd):
-      coord = jogcoordparser(cmd)
-      labbotrunning(1)
-      dser.write(cmd.encode()+"\n".encode())
-      labbotrunning(0)
-      time.sleep(1)
-      try: 
-       nx = open('nx.imgdataset.json')
-       nxdata = json.load(nx)
-       nx.close()
-       nxdata['smoothielastcommand'] = cmd
-       nxdata['currcoord']['X'] = coord['X']
-       nxdata['currcoord']['Y'] = coord['Y']
-       nxdata['currcoord']['Z'] = coord['Z']
-       nxdata['currcoord']['E'] = coord['E']
-       nxdatar = json.dumps(nxdata)
-       nx = open('nx.imgdataset.json','w')
-       nx.write(nxdatar)
-       nx.close()
-      except:
-       pass
-    if cmd == "M114":
-      print("m114 called")
-      getposition(dser)
-    if cmd == "getduetip":
-      getipaddr(dser)
-    if cmd == "blueledon":
-      dser.write(b'M106 P0 I1 F25000 \n')
-    if cmd == "blueledoff":
-      dser.write(b'M106 P0 I0 F25000 \n')
-    if cmd == "M105":
-      gettemperature(dser)
-    if re.match('sg[1|2].*',cmd):
-      sser.write(re.sub('^s', '', cmd).encode()+"\n".encode())
-      upublisher(cmd)
-    if re.match('touch.*',cmd):
-      #print("touchdry called")
-      #print(cmd)
-      taskjob = readtaskjobjson()
-      touchdry(cmd,taskjob)
-    if re.match('TG1.*',cmd):
-      print("calling the timed position move")
-      #movetopos(dser,cmd)
-      verifypos(dser,cmd)
-    if cmd == "runmacro":
-     try: 
-      #upublisher(mesg)
-      print("runmacro called")
-      print("print ports")
-      print(ports)
-      print(ports['smoothie'])
-      print(ports['syringe'])
-      #dser.close()
-      #sser.close()
-      #runmacro(dser,kit,sser)
-      #subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/runmacro.py",ports['smoothie'],ports['syringe']]).pid
-     except:
-      pass
-      #print("can not send a mqtt")
-    #if cmd == "deviceconnect":
-    #  dser = openport(ports['smoothie'])
-    #  sser = openport(ports['syringe'])
-    if re.match("valve.*", cmd):
-      (v,pvalves,pos) = re.split('-', cmd)
-      valves = re.split('_',pvalves) 
-      servo(valves,pos,kit)
-      upublisher(cmd)
-    if re.match("snap.*", cmd):
-      print("snap called here")
-      d = datetime.datetime.today()
-      checktm = str(d.year)+str(d.month)+str(f'{d.day:02}')
-      timestamp = time.strftime('%H%M%S')
-      print(checktm)
-      (snap,location,focus,exposure) = re.split(" ",cmd)
-      print(location)
-      nx = open('nx.imgdataset.json')
-      mesg = json.load(nx)
-      nx.close()
-      #ccmd = "ssh pi@192.168.1.85 raspistill -w 320 -h 240 -ex sports --nopreview --timeout 1 -o \/home\/pi\/"+checktm+timestamp+".jpg"
-      ccmd = "mosquitto_pub -h "+mesg['cameraip']+" -t 'dcam2' -m 'snap "+focus+"_"+exposure+"_"+checktm+timestamp+"'"
-      print(ccmd)
-      os.system(ccmd)
-      time.sleep(1)
-      #cccmd = "scp pi@"+mesg['cameraip']+":\/home\/pi\/"+focus+"_"+exposure+"_"+checktm+timestamp+".jpg \/var\/www\/html\/labbot\/imaging\/"+location
-      #print(cccmd)
-      #os.system(cccmd)
-
-ports = whatstheports()
-dser = openport(ports['smoothie'])
-sser = openport(ports['syringe'])
-print(dser)
-print(sser)
+dser = openport(ddser)
+sser = openport(ssser)
 kit = servoset()
-getposition(dser)
-
-'''
-time.sleep(1)
-dser.write(b'M563 P1 D1 H2\n')
-time.sleep(0.5)
-dser.write(b'M305 P2 R4700 T100000 B4388\n')
-time.sleep(0.5)
-dser.write(b'M307 H1 A240 C640 D5.5 V12\n')
-time.sleep(1)
-dser.write(b'M307 H2 A240 C640 D5.5 V12\n')
-time.sleep(1)
-'''
-#runmacro(dser,aser)
-
-client = establishconnection()
+runmacro(dser,kit,sser)
+dser.close()
+sser.close()
+cmd = "mosquitto_pub  -t 'controllabbot' -m 'run interactive'"
+os.system(cmd) 
 
 

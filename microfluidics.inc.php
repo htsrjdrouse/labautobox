@@ -270,7 +270,24 @@
 <br><button type="submit" name=gotowaste value="gotowaste"  class="btn btn-primary btn-xs">Go to waste</button><br>
 </td>
 <td>
+<? foreach($types[0] as $key => &$val){ ?>
+<? if ($val['name'] == "drypad"){ ?>
+<? $pprog = json_decode(file_get_contents('labbot.programtorun.json'), true); 
+if (count($pprog['drypositions'])<1){
+ echo "reset positions<br>";
+  $fxpos = $val['posx'] + $val['marginx'];
+  $fypos = $val['posy'] + $val['marginy'];
+  $drypositions = array();
+  $npprog = array("program"=>$pprog['program'],"drypositions"=>$val[0]['drypositions'],"dryrefnum"=>"0"); 
+  file_put_contents('labbot.programtorun.json', json_encode($npprog));
+}
+?>
+<?$_SESSION['dryrefnum'] = $pprog['dryrefnum'];?>
+<?$_SESSION['drypositions'] = $val[0]['drypositions'];?>
+
 <br><button type="submit" name=gotodry value="gotodry"  class="btn btn-primary btn-xs">Go to dry</button>
+<? } } ?>
+
 </td></tr>
 </table>
 </form>

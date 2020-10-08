@@ -238,9 +238,9 @@ $(document).ready(function(){
  <? if(!isset($_SESSION['labbot3d']['campostdelay'])){ $_SESSION['labbot3d']['campostdelay'] = 1; } ?>
  <? if(!isset($_SESSION['labbot3d']['camfocus'])){ $_SESSION['labbot3d']['camfocus'] = 400; } ?>
  <? if(!isset($_SESSION['labbot3d']['camexposure'])){ $_SESSION['labbot3d']['camexposure'] = 50; } ?>
- <b>Delay</b><br>
- <b>Pre: </b> &nbsp;<input type=text name=campredelay value=<?=$_SESSION['labbot3d']['campredelay']?> size=2>
- <b>Post: </b> &nbsp;<input type=text name=campostdelay value=<?=$_SESSION['labbot3d']['campostdelay']?> size=2>
+ <!--<b>Pre: </b> &nbsp;<input type=text name=campredelay value=<?=$_SESSION['labbot3d']['campredelay']?> size=2>
+ <b>Post: </b> &nbsp;<input type=text name=campostdelay value=<?=$_SESSION['labbot3d']['campostdelay']?> size=2> 
+-->
   <br>
  <b>Focus (50-900): </b> &nbsp;<input type=text name=camfocus value=<?=$_SESSION['labbot3d']['camfocus']?> size=3><br>
  <b>Expose (1-100): </b> &nbsp;<input type=text name=camexposure value=<?=$_SESSION['labbot3d']['camexposure']?> size=3>
@@ -297,7 +297,7 @@ $(document).ready(function(){
  <input type="button" value="Up" style="background-color: white;color:black;border: 2px solid #4CAF50;border-radius: 12px;">
  <input type="button" value="Down" style="background-color: white;color:black;border: 2px solid #FF6347;border-radius: 12px;">
 &nbsp;&nbsp;&nbsp;&nbsp;
-<b>Restart subscriber: </b><input type=checkbox name=restart>
+<!--<b>Restart subscriber: </b><input type=checkbox name=restart> -->
 <br>
  <? $size = count($labbotprogramjson);
    if ($size > 9) {$size = 10; }

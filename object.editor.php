@@ -122,7 +122,6 @@ if (isset($_POST['savetarget'])){
 	  $fxpos = $_POST['posx'] + $_POST['marginx'];
 	  $fypos = $_POST['posy'] + $_POST['marginy'];
 	  $drypositions = array();
-
 	  for($x=0; $x<($_POST['wellcolumnsp'] / $_POST['dryspacing']); $x++){
 	  for($y=0; $y<($_POST['shapey'] / $_POST['dryspacing']); $y++){
 		  array_push($drypositions, array(

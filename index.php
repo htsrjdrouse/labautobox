@@ -60,7 +60,7 @@
   sleep(3);
  }
  if(isset($_POST['disconnectsub'])){
-  exec("ps aux | grep -i 'subscriber.py' | grep -v grep", $pids);
+  exec("ps aux | grep -i 'interactive.py' | grep -v grep", $pids);
   $pid = (preg_split("/ /",$pids[0])[5]);
   $cmd = 'mosquitto_pub -t "controllabbot" -m "turnoff '.$pid.'"';
   exec($cmd);
@@ -76,7 +76,7 @@
  <div class="col-md-3"><br><br>
  <ul>
 <?
-exec("ps aux | grep -i 'subscriber.py' | grep -v grep", $pids);
+exec("ps aux | grep -i 'interactive.py' | grep -v grep", $pids);
 if(empty($pids)) { ?>
  <form action=<?=$_SERVER['PHP_SELF']?> method=post>
  <button type="submit" name=connectsub class="btn btn-success">Connect</button>
@@ -120,7 +120,7 @@ if(empty($pids)) { ?>
  <td><button type="submit" name=objects class="btn btn-primary">Objects</button>&nbsp;&nbsp;</td>
  <td><button type="submit" name=buildmacro class="btn btn-success">Build Macro</button>&nbsp;&nbsp;</td>
  <td><button type="submit" name=editmacro class="btn btn-warning">Edit/Run Macro</button>&nbsp;&nbsp;</td>
- <td><a class="btn btn-danger" href="logger.php" role="button" name=logger target="new">Logger</button></td>
+ <!--<td><a class="btn btn-danger" href="logger.php" role="button" name=logger target="new">Logger</button></td> -->
  </tr></table>
  </form>
 <hr>
