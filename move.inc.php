@@ -11,12 +11,14 @@
    $cmd = 'mosquitto_pub -t "labbot" -m "'.$sendgcode.'"';
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   header('Location: index.php');
  }
  if (isset($_POST['getgcodepos'])){
    publish_message("M114", 'labbot', 'localhost', 1883, 5);    
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
    $cmd = 'mosquitto_pub -t "labbot" -m "M114"';
    exec($cmd);
+   header('Location: index.php');
  }
 
  if (isset($_POST['sendxyfeed'])){
@@ -24,11 +26,13 @@
    $_SESSION['labbotprogram']['feedrate'] = $xyfeed;
    $jsonimg['speed']['xyjogfeed'] = $xyfeed;
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   header('Location: index.php');
  }
  if (isset($_POST['sendzfeed'])){
    $zfeed = $_POST['zfeed']; 
    $jsonimg['speed']['zjogfeed'] = $zfeed;
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   header('Location: index.php');
  }
  if (isset($_POST['homelinact'])){
    $jsonimg['linact']['position'] = 0;
@@ -61,8 +65,10 @@
    $jsonimg['currcoord']['Y'] = $jsonimg['currcoord']['Y'] + $ar[1];
    $gcodecmd = 'G1 X'.$jsonimg['currcoord']['X'].' Y'.$jsonimg['currcoord']['Y'].' Z'.$jsonimg['currcoord']['Z'].' F'.$jsonimg['speed']['xyjogfeed'];
    $cmd = 'mosquitto_pub -t "labbot" -m "'.$gcodecmd.'"';
+   //echo '<br>'.$cmd.'<br>';
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   header('Location: index.php');
   }
   if (preg_match('/^moveyneg.*/', $_GET['id'])){
    preg_match('/^moveyneg(.*)$/', $_GET['id'], $ar);
@@ -71,6 +77,7 @@
    $cmd = 'mosquitto_pub -t "labbot" -m "'.$gcodecmd.'"';
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   header('Location: index.php');
   }
   if (preg_match('/^movexpos.*/', $_GET['id'])){
    preg_match('/^movexpos(.*)$/', $_GET['id'], $ar);
@@ -79,6 +86,7 @@
    $cmd = 'mosquitto_pub -t "labbot" -m "'.$gcodecmd.'"';
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   header('Location: index.php');
   }
   if (preg_match('/^movexneg.*/', $_GET['id'])){
    preg_match('/^movexneg(.*)$/', $_GET['id'], $ar);
@@ -87,6 +95,7 @@
    $cmd = 'mosquitto_pub -t "labbot" -m "'.$gcodecmd.'"';
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   header('Location: index.php');
   }
   if (preg_match('/^movezpos.*/', $_GET['id'])){
    preg_match('/^movezpos(.*)$/', $_GET['id'], $ar);
@@ -95,6 +104,7 @@
    $cmd = 'mosquitto_pub -t "labbot" -m "'.$gcodecmd.'"';
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
+   header('Location: index.php');
   }
   if (preg_match('/^movezneg.*/', $_GET['id'])){
    preg_match('/^movezneg(.*)$/', $_GET['id'], $ar);
@@ -104,6 +114,7 @@
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
    echo "<meta http-equiv='refresh' content='0'>";
+   header('Location: index.php');
   }
 
   if (preg_match('/^homez/', $_GET['id'])){
@@ -112,6 +123,7 @@
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
    echo "<meta http-equiv='refresh' content='0'>";
+   header('Location: index.php');
   } 
   if (preg_match('/^homex$/', $_GET['id'])){
    $jsonimg['currcoord']['X'] = 0; 
@@ -119,6 +131,7 @@
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
    echo "<meta http-equiv='refresh' content='0'>";
+   header('Location: index.php');
   } 
 
   if (preg_match('/^homexyz$/', $_GET['id'])){
@@ -134,6 +147,7 @@
    sleep(0.5);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
    echo "<meta http-equiv='refresh' content='0'>";
+   header('Location: index.php');
   } 
   if (preg_match('/^homey/', $_GET['id'])){
    $jsonimg['currcoord']['Y'] = 0; 
@@ -141,8 +155,8 @@
    exec($cmd);
    file_put_contents('nx.imgdataset.json', json_encode($jsonimg));
    echo "<meta http-equiv='refresh' content='0'>";
+   header('Location: index.php');
   } 
 
  }
-   header('Location: index.php');
 ?>

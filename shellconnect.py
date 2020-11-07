@@ -45,7 +45,9 @@ def openport(prt):
 
 ports = whatstheports()
 print(ports)
-#dser = openport(ports['smoothie'])
+dser = openport(ports['smoothie'])
+dser.write(b'M105\n')
+print(dser.readlines())
 #sser = openport(ports['syringe'])
 #time.sleep(3)
 #dser.write(b'M106 P0 I1 F25000 \n')

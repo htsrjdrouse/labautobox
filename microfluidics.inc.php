@@ -16,6 +16,8 @@
  if (isset($_POST['homesyringe'])){
   $msg =  "homing syringe";
   $_SESSION['microliter'] = 0;
+  $jsonmonitor['syringe']['microliter'] =  $_SESSION['microliter'];
+  file_put_contents('monitor.json', json_encode($jsonmonitor));
   $pcmd = "sg28e0";
   $cmd = 'mosquitto_pub -t "labbot" -m "'.$pcmd.'"';
   exec($cmd);

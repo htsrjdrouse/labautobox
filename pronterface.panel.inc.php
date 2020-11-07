@@ -46,9 +46,10 @@
 <form action=move.inc.php method=post>
 <p><input type=text name=sendgcode value="<?=$jsonimg['smoothielastcommand']?>" size=20 style="text-align:right;font-size:10px;">
 <button type="submit" name="sendgcodecmd" value="Send gcode" class="btn btn-success btn-sm">Send gcode</button><br>
+<? if(!isset($jsonimg['speed']['xyjogfeed'])){ $jsonimg['speed']['xyjogfeed'] = 3000; } ?>
 <p><input type=text name=xyfeed value="<?=$jsonimg['speed']['xyjogfeed']?>" size=20 style="text-align:right;font-size:10px">
 <button type="submit" name=sendxyfeed value="Adjust XY speed"  class="btn btn-primary btn-sm">Adjust XY speed</button><br>
-
+<? if(!isset($jsonimg['speed']['xyjogfeed'])){ $jsonimg['speed']['zjogfeed'] = 3000; } ?>
 <p><input type=text name=zfeed value="<?=$jsonimg['speed']['zjogfeed']?>" size=20 style="text-align:right;font-size:10px">
 <button type="submit" name=sendzfeed value="Adjust Z speed"  class="btn btn-warning btn-sm">Z speed</button><br>
 </form>
