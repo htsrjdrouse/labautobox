@@ -241,6 +241,18 @@ def runeachmacrocmd(cmd,dser,kit,taskjob):
      upublisher(cmd)
      print("snap is called")
      snap(cmd)
+   if re.match("^flashon.*",cmd):
+     upublisher(cmd)
+     (mm, cameraip) = re.split("_", cmd)
+     ccmd = "mosquitto_pub -h "+cameraip+" -t 'dcam2' -m 'flashon'"
+     os.system(ccmd)
+
+   if re.match("^flashoff.*",cmd):
+     upublisher(cmd)
+     (mm, cameraip) = re.split("_", cmd)
+     ccmd = "mosquitto_pub -h "+cameraip+" -t 'dcam2' -m 'flashoff'"
+     os.system(ccmd)
+
    if re.match("^valve.*",cmd):
      print(cmd)
      (v,pvalves,pos) = re.split('-', cmd)

@@ -542,6 +542,14 @@ def on_message(client, userdata, message):
       dser.write(b'M106 P0 I0 F25000 \n')
     if cmd == "M105":
       gettemperature(dser)
+    if re.match('flashon.*',cmd):
+      (mm, cameraip) = re.split("_", cmd)
+      ccmd = "mosquitto_pub -h "+cameraip+" -t 'dcam2' -m 'flashon'"
+      os.system(ccmd)
+    if re.match('flashoff.*',cmd):
+      (mm, cameraip) = re.split("_", cmd)
+      ccmd = "mosquitto_pub -h "+cameraip+" -t 'dcam2' -m 'flashoff'"
+      os.system(ccmd)
     if re.match('sg[1|2].*',cmd):
       sser.write(re.sub('^s', '', cmd).encode()+"\n".encode())
       upublisher(cmd)

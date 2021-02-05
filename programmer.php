@@ -177,7 +177,7 @@
   <input type=radio name=plug value=1> <b>Wash</b><br>
   <input type=radio name=plug value=2> <b>Waste</b><br>
   <input type=radio name=plug value=3> <b>Pressure</b><br>
-  <!--<input type=radio name=plug value=4> <b>Blue LED</b><br> -->
+  <input type=radio name=plug value=4> <b>Flash</b><br>
  </div>
  <div class="col-sm-3">
   <b>On</b>&nbsp;<input type="radio" id="on" name="pump" value="on"><br>
@@ -244,7 +244,6 @@ $(document).ready(function(){
   <br>
  <b>Focus (50-900): </b> &nbsp;<input type=text name=camfocus value=<?=$_SESSION['labbot3d']['camfocus']?> size=3><br>
  <b>Expose (1-100): </b> &nbsp;<input type=text name=camexposure value=<?=$_SESSION['labbot3d']['camexposure']?> size=3>
-<br>
 <br>
  </div>
  <div class="col-sm-3">

@@ -219,7 +219,7 @@ if (isset($_POST['gpiosubmitstep'])){
  if ($plug == 1) { $gt = "wash"; }
  if ($plug == 2) { $gt = "waste"; }
  if ($plug == 3) { $gt = "pcv"; }
- if ($plug == 4) { $gt = "blueled"; }
+ if ($plug == 4) { $gt = "flash_".$_POST['cameraip']; }
  if ($closedloop == "on") {
 	 $mesg= $gt." ".$plug." ".$_POST['pump']." ".$_POST['temperature'];
  } else {
@@ -232,6 +232,7 @@ if (isset($_POST['gpiosubmitstep'])){
   "onoff"=>$_POST['pump'],
   "magnitude"=>$_POST['magnitude'],
   "temperature"=>$_POST['temperature'],
+  "cameraip"=>$_POST['cameraip'],
   "thermistor"=>$_POST['thermistor'],
   "mesg" => $mesg
  ));

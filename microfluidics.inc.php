@@ -185,12 +185,26 @@
 <form action=<?=$_SERVER['PHP_SELF']?> method=post>
 <div class="col-sm-3">
 <b>Select valves</b>
+<script>
+   function selectAll() {
+        var blnChecked = document.getElementById("select_all_invoices").checked;
+        var check_invoices = document.getElementsByClassName("check_invoice");
+        var intLength = check_invoices.length;
+        for(var i = 0; i < intLength; i++) {
+            var check_invoice = check_invoices[i];
+            check_invoice.checked = blnChecked;
+        }
+    }
+</script>
 </div>
 <div class="col-sm-8">
 <?if(!isset($_SESSION['labbot3d']['tiplist'])){ $_SESSION['labbot3d']['tiplist'] = $jsonmicrofl['tiplist']; } ?>
 <table><tr>
+<font size=1><b>Select All/None</b></font>&nbsp;
+<input type='checkbox' id='select_all_invoices' onclick="selectAll()"> 
+<br>
 <? for($i=0;$i<8;$i++){ ?>
-<td align=center><?=($i+1)?><br><input type=checkbox class="form-check-input" name="valve<?=($i)?>" <? if ($jsonmonitor['valve']['tiplist'][$i] == "1"){ echo "checked"; }?>>&nbsp;</td>
+<td align=center><?=($i+1)?><br><input type=checkbox class="check_invoice" name="valve<?=($i)?>" <? if ($jsonmonitor['valve']['tiplist'][$i] == "1"){ echo "checked"; }?>>&nbsp;</td>
 <? } ?>
 </tr></table>
 </div>

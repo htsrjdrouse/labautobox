@@ -47,6 +47,16 @@ def openport(prt):
 
 
 
+def pauseproc(script):
+ process = subprocess.Popen("ps aux | grep "+script,shell=True,stdout=subprocess.PIPE)
+ p = psutil.Process(process)
+ p.suspend()
+
+def resumeproc(script):
+ process = subprocess.Popen("ps aux | grep "+script,shell=True,stdout=subprocess.PIPE)
+ p = psutil.Process(process)
+ p.resume()
+
 
 
 def killproc(script):
@@ -144,7 +154,14 @@ def on_message(client, userdata, message):
       time.sleep(1)
       print("sudo python3 /var/www/html/labautobox/runmacro.py "+ports['smoothie']+" "+ports['syringe'])
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/runmacro.py",ports['smoothie'],ports['syringe']]).pid
-
+    if re.match("^kill runmacro.*", cmd):
+       killproc('runmacro.py')
+       time.sleep(2)
+       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/interactive.py",ports['smoothie'],ports['syringe']]).pid
+    if re.match("^pause runmacro.*", cmd):
+       pauseproc('runmacro.py')
+    if re.match("^resume runmacro.*", cmd):
+       resumeproc('runmacro.py')
 
 
 ports = whatstheports()

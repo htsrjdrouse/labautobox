@@ -233,12 +233,18 @@ if ($labbotprogramjson['justdry'] == 0) {
   $jsonmicrofl = json_decode(file_get_contents('microfluidics.json'), true);
   if ($labbotprogramjson['plug'] == "1"){
    $line  = "wash";
+   $line = $line.$labbotprogramjson['onoff'];
   } else if ($labbotprogramjson['plug'] == "2"){
    $line  = "waste";
+   $line = $line.$labbotprogramjson['onoff'];
   } else if ($labbotprogramjson['plug'] == "3"){
    $line  = "pcv";
+   $line = $line.$labbotprogramjson['onoff'];
   } else if ($labbotprogramjson['plug'] == "4"){
-   $line  = "blueled";
+   $line  = "flash";
+   $line = $line;
+   $line = $line.$labbotprogramjson['onoff'];
+   $line = $line."_".$labbotprogramjson['cameraip'];
   }
   /*
  if ($labbotprogramjson['closedloop'] == "off"){
@@ -247,7 +253,6 @@ if ($labbotprogramjson['justdry'] == 0) {
   $line = $line." P".$labbotprogramjson['plug']." T".$labbotprogramjson['temperature']." S".$labbotprogramjson['magnitude'];
  }
    */
-  $line = $line.$labbotprogramjson['onoff'];
   if ($line == "washon"){ $_SESSION['labbot3d']['washon'] = 1; $jsonmicrofl['wash']['on'] = 1;}
   if ($line == "washoff"){ $_SESSION['labbot3d']['washon'] = 0; $jsonmicrofl['wash']['on'] = 0;}
   if ($line == "wasteon"){ $_SESSION['labbot3d']['dryon'] = 1; $jsonmicrofl['waste']['on'] = 1;}

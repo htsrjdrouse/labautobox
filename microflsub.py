@@ -210,6 +210,14 @@ aser.write("dryoff".encode()+"\n".encode())
 time.sleep(0.2)
 aser.write("pcvoff".encode()+"\n".encode())
 time.sleep(0.2)
+aser.write("setlevelval 0".encode()+"\n".encode())
+time.sleep(0.5)
+aser.write("manpcv".encode()+"\n".encode())
+time.sleep(0.2)
+
+
+
+
 microflstatus = {}
 #microflstatus = {"manpcv":1,"heaton":0,"washon":0,"wasteon":0,"pcvon":0:"setlevelval":60,"heatval":100}
 microflstatus["manpcv"] = 1 

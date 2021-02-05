@@ -21,6 +21,21 @@
 <br>
 <h2><a href=index.php>Interactive/Design</a></h2>
 <br>
+<a href=killrun.php?id=stop><font color=red><i class="fa fa-stop" aria-hidden="true"> STOP</font></i></a>
+<br>
+<br>
+<? if (isset($_GET['id'])and($_GET['id'] == 1)){ 
+?>
+<a href=killrun.php?id=stop><font color=red><i class="fa fa-play" aria-hidden="true"> RESUME</font></i></a>
+<?
+} else {
+?>
+<a href=killrun.php?id=stop><font color=red><i class="fa fa-pause" aria-hidden="true"> PAUSE</font></i></a>
+<? } ?>
+<br>
+<br>
+
+
 
 
 <h2>Logger</h2><br>
