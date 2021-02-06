@@ -155,9 +155,12 @@ def on_message(client, userdata, message):
       print("sudo python3 /var/www/html/labautobox/runmacro.py "+ports['smoothie']+" "+ports['syringe'])
       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/runmacro.py",ports['smoothie'],ports['syringe']]).pid
     if re.match("^kill runmacro.*", cmd):
+       print("killing runmacro")
        killproc('runmacro.py')
-       time.sleep(2)
+       time.sleep(0.5)
        subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/interactive.py",ports['smoothie'],ports['syringe']]).pid
+       time.sleep(0.5)
+       subprocess.Popen(["sudo","python3", "/var/www/html/labautobox/positiondisplay.py"]).pid
     if re.match("^pause runmacro.*", cmd):
        pauseproc('runmacro.py')
     if re.match("^resume runmacro.*", cmd):
