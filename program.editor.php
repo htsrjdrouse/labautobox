@@ -144,6 +144,14 @@ if (isset($_POST['motionsubmitstep'])){
  if(!isset($_SESSION['labbotprogramjson'])){
   $_SESSION['labbotprogramjson'] = array();
  }
+ if ($_POST['homez'] == "on"){
+ array_push($_SESSION['labbotprogramjson'], array(
+  "tasktype"=>"homez",
+  "mesg"=>"homez"
+ ));
+ closejson($_SESSION['labbotprogramjson'],'labbot.programs.json');
+ header("Location: index.php");
+ } else {
  array_push($_SESSION['labbotprogramjson'], array(
   "tasktype"=>"motion",
   "task"=>$_POST['task'],
@@ -155,8 +163,8 @@ if (isset($_POST['motionsubmitstep'])){
  ));
  closejson($_SESSION['labbotprogramjson'],'labbot.programs.json');
  header("Location: index.php");
+ }
 }
-
 if (isset($_POST['valvesubmitstep'])){ 
  unset($_SESSION['labbotprogramjson']);
  $_SESSION['labbotprogramjson'] = json_decode(file_get_contents('labbot.programs.json'), true);
@@ -327,6 +335,10 @@ if (isset($_POST['displaymacro'])){
     $cmdlist = macro($cmdlist, $labbotprogramjson[$mm]);
     displaymacro($cmdlist);
   }
+  if($labbotprogramjson[$mm]['tasktype'] == "homez"){
+    $cmdlist = homez($cmdlist, $labbotprogramjson[$mm]);
+    displaymacro($cmdlist);
+  }
   if($labbotprogramjson[$mm]['tasktype'] == "valve"){
     $cmdlist = valve($cmdlist, $labbotprogramjson[$mm]);
      displaymacro($cmdlist);
@@ -377,6 +389,9 @@ if (isset($_POST['editmacro'])){
   }
   if($labbotprogramjson[$mm]['tasktype'] == "motion"){
     $cmdlist = motion($cmdlist, $labbotprogramjson[$mm]);
+  }
+  if($labbotprogramjson[$mm]['tasktype'] == "homez"){
+    $cmdlist = homez($cmdlist, $labbotprogramjson[$mm]);
   }
   if($labbotprogramjson[$mm]['tasktype'] == "valve"){
     $cmdlist = valve($cmdlist, $labbotprogramjson[$mm]);

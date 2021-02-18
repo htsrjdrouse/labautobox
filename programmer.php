@@ -96,7 +96,9 @@
  <b>Feedrate</b><br>
  <? if(!(isset($_SESSION['labbotprogram']['feedrate']))){ $_SESSION['labbotprogram']['feedrate']  = 3000; }?>
  <input type=text name=feedrate value="<?=$_SESSION['labbotprogram']['feedrate']?>" size=4>
- 
+ <br><br>
+<b>Home Z</b> <input type=checkbox name=homez> 
+ <br>  
 
 </div>
  <div class="col-sm-2">

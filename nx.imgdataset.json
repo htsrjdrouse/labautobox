@@ -1,1 +1,1 @@
-{"smoothielastcommand": "G1X234.0Y31.0Z12.0F3000", "currcoord": {"Z": 12.0, "X": 234.0, "Y": 31.0, "E": 0.0}, "speed": {"zjogfeed": "3000", "xyjogfeed": "3000"}}
+{"smoothielastcommand": "G1X347.0Y181.5Z0.0F3000", "currcoord": {"Z": 0.0, "X": 347.0, "Y": 181.5, "E": 0.0}, "speed": {"zjogfeed": "3000", "xyjogfeed": "3000"}, "cameraip": "192.168.1.89"}

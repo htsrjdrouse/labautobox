@@ -74,7 +74,10 @@
   return $cmdlist; 
 }
 ?>
-
+<? function homez($cmdlist,$labbotprogramjson){ 
+  array_push($cmdlist,"G28Z0_5"); 
+  return $cmdlist;
+} ?>
 <? function motion($cmdlist,$labbotprogramjson){ ?>
 <? foreach($_SESSION['labbotprogramjson'] as $tt) { 
   if (isset($tt['object'])){
@@ -83,7 +86,6 @@
    }
   }
 } ?>
-
 <? foreach($_SESSION['labbotjson']['types'][0] as $tt) { 
   if ($tt['name'] == $obj){
      $coord = $tt;
