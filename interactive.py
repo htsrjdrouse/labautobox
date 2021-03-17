@@ -62,7 +62,7 @@ def snap(cmd):
 
 def servoset():
  kit = ServoKit(channels=16)
- rg = [2750,2750,2650,2650,2750,2650,2650,2650]
+ rg = [2750,2750,2750,2650,2750,2650,2650,2650]
  for i in range(0,8):
   #kit.servo[i].set_pulse_width_range(500, 2800) 
   kit.servo[i].set_pulse_width_range(800, rg[i]) 
@@ -73,11 +73,11 @@ def servo(valves,pos,kit):
   #ps['input'] = 0
   ps['input'] = [0,0,0,0,0,0,0,0]
   #ps['output'] = 75
-  ps['output'] = [100,100,75,75,100,75,75,75]
+  ps['output'] = [100,100,100,75,100,75,75,75]
   #ps['bypass'] = 30
   ps['bypass'] = [30,30,30,30,30,30,30,30]
   #ps['close'] = 160
-  ps['close'] = [180,180,160,160,180,160,160,160]
+  ps['close'] = [180,180,180,160,180,160,160,160]
   #print("just before loop")
   ct = 0
   for i in valves:
