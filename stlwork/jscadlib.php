@@ -29,7 +29,13 @@ function positionstats($polyhedron,$functionname){
    $movedata = array(
      "x"=>0,
      "y"=>0,
-     "z"=>0
+     "z"=>0,
+     "rx"=>0,
+     "ry"=>0,
+     "rz"=>0,
+     "mx"=>null,
+     "my"=>null,
+     "mz"=>null
     );
    file_put_contents('uploads/'.$functionname.'.json', json_encode($movedata));
   }
@@ -57,7 +63,13 @@ function positionstats($polyhedron,$functionname){
     "maxz"=>max($zpos),
     "movex"=>$movedata['x'],
     "movey"=>$movedata['y'],
-    "movez"=>$movedata['z']
+    "movez"=>$movedata['z'],
+    "rotatex"=>$movedata['rx'],
+    "rotatey"=>$movedata['ry'],
+    "rotatez"=>$movedata['rz'],
+    "mirrorx"=>$movedata['mx'],
+    "mirrory"=>$movedata['my'],
+    "mirrorz"=>$movedata['mz']
   );
   return $stats;
 }

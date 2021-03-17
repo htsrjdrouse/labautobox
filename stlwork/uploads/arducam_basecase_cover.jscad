@@ -1,4 +1,4 @@
-function main() { return union( arducam_basecase_cover().translate([-18.5,10,25])); }
+function main() { return union( arducam_basecase_cover().translate([81.5,22,25]).rotateX(90).rotateY(0).rotateZ(0)); }
 function arducam_basecase_cover() {return polyhedron({ points: [
   [33.5,-19,28],
   [33.5,-19,-6],

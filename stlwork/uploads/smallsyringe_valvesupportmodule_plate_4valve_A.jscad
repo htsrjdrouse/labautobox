@@ -1,4 +1,4 @@
-function main() { return union( smallsyringe_valvesupportmodule_plate_4valve_A().translate([26,-458,-33.7])); }
+function main() { return union( smallsyringe_valvesupportmodule_plate_4valve_A().translate([26,-458,-33.7]).rotateX(0).rotateY(0).rotateZ(0)); }
 function smallsyringe_valvesupportmodule_plate_4valve_A() {return polyhedron({ points: [
   [7.9,483.2,33.7],
   [7.86941,482.909,33.7],

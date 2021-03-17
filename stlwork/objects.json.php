@@ -65,7 +65,6 @@ if ($_FILES["fileToUpload"]["size"] > 5000000) {
  <div class="col-md-1"></div>
  <div class="col-md-2"><br> 
 
-<? if (isset($_SESSION['objectsactive'])){ echo $_SESSION['objectsactive']; } ?><br>
 
 <h4>Select object list file:</h4><br>
  <?$dir = scandir("uploads/"); ?>
@@ -184,33 +183,61 @@ function sub(obj) {
 <br> 
 
 <? if (isset($_SESSION['objectsactive'])){ 
-echo $_SESSION['objectsactive'].'<br>';
+echo $_SESSION['objectsactive']; 
 ?>
- MinX: <?=$_SESSION['stlobj']['stats']['minx']?> --
- MaxX: <?=$_SESSION['stlobj']['stats']['maxx']?> <br>
- MinY: <?=$_SESSION['stlobj']['stats']['miny']?> --
- MaxY: <?=$_SESSION['stlobj']['stats']['maxy']?> <br>
- MinZ: <?=$_SESSION['stlobj']['stats']['minz']?> --
- MaxZ: <?=$_SESSION['stlobj']['stats']['maxz']?> <br>
+<div class="row">
+<div class="col-sm-4"></div>
+<div class="col-sm-4"><form action=objects.json.form.php method=post>
+<table><tr><td><button type="submit" name="render" class="btn-sm btn-danger">Render to STL</button></td><td>&nbsp;</td>
+<? if((isset($_GET['id']))and($_GET['id']=="download")){?>
+<td><a href="uploads/mod.<?=$_SESSION['objectsactive']?>" class="btn btn-sm btn-success" role="button" aria-pressed="true">Download STL</a></td>
+<? } ?>
+</tr></table>
+</form></div>
+<div class="col-sm-4"></div>
+</div>
+<br>
 <? 
- echo '<br>';
  include('3dviewer.inc.php');
 } ?>
+<div class="row">
+ <div class="col-sm-8">
 <? $jsonfile = preg_replace("/stl$|STL$/", "json", $_SESSION['objectsactive']); ?>
 <? $movedata = json_decode(file_get_contents('uploads/'.$jsonfile), true);?>
 <form action=objects.json.form.php method=post>
 Move X: <input name="movex" type="text" size=6 value="<?=$movedata['x']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
  Y: <input name="movey" type="text" size=6 value="<?=$movedata['y']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
  Z: <input name="movez" type="text" size=6 value="<?=$movedata['z']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
+<br><br>
+Rotate X: <input name="rotatex" type="text" size=6 value="<?=$movedata['rx']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
+ Y: <input name="rotatey" type="text" size=6 value="<?=$movedata['ry']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
+ Z: <input name="rotatez" type="text" size=6 value="<?=$movedata['rz']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
+<br><br>
+<? if(!isset($_SESSION['mirrorx'])){ $_SESSION['mirrorx'] = ""; $_SESSION['mirrory'] = ""; $_SESSION['mirrorz'] = "";}?>
+Mirror X: <input type=checkbox name=mirrorx <?=$_SESSION['mirrorx']?>> &nbsp;&nbsp;&nbsp; 
+Y: <input type=checkbox name=mirrory <?=$_SESSION['mirrory']?>> &nbsp;&nbsp;&nbsp; 
+Z: <input type=checkbox name=mirrorz <?=$_SESSION['mirrorz']?>>
+<br>
+</div>
+<div class="col-sm-2">
 <button type="submit" name="position" class="btn-sm btn-primary">Move</button><br><br>
-<form action=objects.json.form.php method=post>
-Rotate X: <input name="rotatex" type="text" size=6 value="<?=$movedata['x']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
- Y: <input name="rotatey" type="text" size=6 value="<?=$movedata['y']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
- Z: <input name="rotatez" type="text" size=6 value="<?=$movedata['z']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
-<button type="submit" name="rotate" class="btn-sm btn-primary">Rotate</button><br><br>
-
-
 </form>
+</div>
+</div>
+
+<div class="row">
+ <!--
+ <div class="col-sm-12">
+  <br><pre><? //if(isset($_SESSION['headersyntax'])){ echo $_SESSION['headersyntax'].'<br>';}?> </pre><br>
+  <bR>
+  <?//print_r($_SESSION['jsonfiletrack']); ?>
+  <bR>
+  -->
+
+ </div>
+</div>
+
+
 </div>
 <div class="col-md-2">
 </div>

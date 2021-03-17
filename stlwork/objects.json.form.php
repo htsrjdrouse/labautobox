@@ -1,10 +1,24 @@
 <? session_start(); ?>
 <? include('jscadlib.php') ?>
+<? if(isset($_POST['render'])){
+$jscadfile = preg_replace("/stl$|STL$/", "jscad", $_SESSION['objectsactive']);
+system("openjscad uploads/".$jscadfile." -o uploads/mod.".$_SESSION['objectsactive']);
+header("Location: objects.json.php?id=download");
+}?>
 <? if(isset($_POST['position'])){
+ if ($_POST['mirrorx'] =="on"){$_SESSION['mirrorx'] = "checked";} else{ $_SESSION['mirrorx'] = "";}
+ if ($_POST['mirrory'] =="on"){$_SESSION['mirrory'] = "checked";} else{ $_SESSION['mirrory'] = "";}
+ if ($_POST['mirrorz'] =="on"){$_SESSION['mirrorz'] = "checked";} else{ $_SESSION['mirrorz'] = "";}
  $movedata = array(
   'x'=>$_POST['movex'],
   'y'=>$_POST['movey'],
-  'z'=>$_POST['movez']
+  'z'=>$_POST['movez'],
+  'rx'=>$_POST['rotatex'],
+  'ry'=>$_POST['rotatey'],
+  'rz'=>$_POST['rotatez'],
+  'mx'=>$_POST['mirrorx'],
+  'my'=>$_POST['mirrory'],
+  'mz'=>$_POST['mirrorz']
  ); 
  $jsonfile = preg_replace("/stl$|STL$/", "json", $_SESSION['objectsactive']);
  file_put_contents('uploads/'.$jsonfile, json_encode($movedata));
@@ -61,10 +75,18 @@ function openjscad(){
  $functionpolygonheader = " polygons: [";
  $functiontail = "}";
  $stats = positionstats($res['polyhedrons'],$functionname);
+ $header = "function main() { return union( ";
+ $header .= $functionname."().translate([".((-1*(($stats['minx'])+($stats['maxx']-$stats['minx'])/2))+$stats['movex']).",".((-1*(($stats['maxy'])+($stats['maxy']-$stats['miny'])/2))+$stats['movey']).",".((-1*$stats['minz'])+$stats['movez'])."]).rotateX(".$stats['rotatex'].").rotateY(".$stats['rotatey'].").rotateZ(".$stats['rotatez'].")";
+ if ($stats['mirrorx'] == "on"){ $header .= ".mirroredX()";}
+ if ($stats['mirrory'] == "on"){ $header .= ".mirroredY()";}
+ if ($stats['mirrorz'] == "on"){ $header .= ".mirroredZ()";}
+ $header .= "); }";
+ $_SESSION['headersyntax'] = $header;
+ $_SESSION['jsonfiletrack'] = $stats;
+
  $jsonr = array(
-	 //"header"=>"function main() { return union( ".$functionname."().translate([".(-1*($stats['maxx']-($stats['maxx']-$stats['minx'])/2)).",".(-1*($stats['maxy']-($stats['maxy']-$stats['miny'])/2)).",".(-1*$stats['minz'])."])); }",
-	 "header"=>"function main() { return union( ".$functionname."().translate([".((-1*(($stats['minx'])+($stats['maxx']-$stats['minx'])/2))+$stats['movex']).",".((-1*(($stats['maxy'])+($stats['maxy']-$stats['miny'])/2))+$stats['movey']).",".((-1*$stats['minz'])+$stats['movez'])."])); }",
-	 //"header"=>"function main() { return union( ".$functionname."().translate([".(-1*(($stats['minx'])+($stats['maxx']-$stats['minx'])/2))+$stats['movex'].",".(-1*(($stats['maxy'])+($stats['maxy']-$stats['miny'])/2))+$stats['movey'].",".(-1*$stats['minz'])+$stats['movez']."])); }",
+	 //"header"=>"function main() { return union( ".$functionname."().translate([".((-1*(($stats['minx'])+($stats['maxx']-$stats['minx'])/2))+$stats['movex']).",".((-1*(($stats['maxy'])+($stats['maxy']-$stats['miny'])/2))+$stats['movey']).",".((-1*$stats['minz'])+$stats['movez'])."]).rotateX(".$stats['rotatex'].").rotateY(".$stats['rotatey'].").rotateZ(".$stats['rotatez'].")); }",
+	 "header"=>$header,
 	 "functionname"=>$functionname,
 	 "polyhedronheader"=>$functionpolyhedronheader,
 	 "polygonheader"=>$functionpolygonheader,

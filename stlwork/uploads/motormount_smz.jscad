@@ -1,4 +1,4 @@
-function main() { return union( motormount_smz().translate([-4.5,-82,18.5])); }
+function main() { return union( motormount_smz().translate([15.5,-82,18.5]).rotateX(0).rotateY(0).rotateZ(0)); }
 function motormount_smz() {return polyhedron({ points: [
   [35.5058,44.6775,-18.5],
   [35.5058,44.6775,-13.5],

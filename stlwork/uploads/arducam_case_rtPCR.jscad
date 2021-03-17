@@ -1,4 +1,4 @@
-function main() { return union( arducam_case_rtPCR().translate([-85,-17.25,-187])); }
+function main() { return union( arducam_case_rtPCR().translate([-85,2.75,-187]).rotateX(90).rotateY(0).rotateZ(0)); }
 function arducam_case_rtPCR() {return polyhedron({ points: [
   [61.7279,3,199],
   [61.6904,3,198.885],
