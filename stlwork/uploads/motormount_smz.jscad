@@ -1,5 +1,7 @@
-function main() { return union( motormount_smz().translate([15.5,-82,18.5]).rotateX(0).rotateY(0).rotateZ(0)); }
-function motormount_smz() {return polyhedron({ points: [
+function main() { return union(
+// objects: 1
+// object #1: triangles: 512
+polyhedron({ points: [
   [35.5058,44.6775,-18.5],
   [35.5058,44.6775,-13.5],
   [36.2487,42.391,-18.5],
@@ -1536,7 +1538,7 @@ function motormount_smz() {return polyhedron({ points: [
   [-13.4295,54,-8.42947],
   [-14.4808,54,-6.85601],
   [-13.4295,56,-8.42947]],
- polygons: [
+  polygons: [
   [0,1,2],
   [3,4,5],
   [6,7,8],
@@ -2048,5 +2050,5 @@ function motormount_smz() {return polyhedron({ points: [
   [1524,1525,1526],
   [1527,1528,1529],
   [1530,1531,1532],
-  [1533,1534,1535]] })
-}
+  [1533,1534,1535]] }).translate([140,160,0]).scale([1,1,1]).rotateX(0).rotateY(0).rotateZ(0).lieFlat()
+); }

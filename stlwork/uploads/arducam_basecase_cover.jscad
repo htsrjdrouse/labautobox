@@ -1,5 +1,7 @@
-function main() { return union( arducam_basecase_cover().translate([81.5,22,25]).rotateX(90).rotateY(0).rotateZ(0)); }
-function arducam_basecase_cover() {return polyhedron({ points: [
+function main() { return union(
+// objects: 1
+// object #1: triangles: 1060
+polyhedron({ points: [
   [33.5,-19,28],
   [33.5,-19,-6],
   [33.5,-22,28],
@@ -3180,7 +3182,7 @@ function arducam_basecase_cover() {return polyhedron({ points: [
   [28.691,-22,-1.95106],
   [28.691,-19,-1.95106],
   [28.8955,-22,-1.99452]],
- polygons: [
+  polygons: [
   [0,1,2],
   [3,4,5],
   [6,7,8],
@@ -4240,5 +4242,5 @@ function arducam_basecase_cover() {return polyhedron({ points: [
   [3168,3169,3170],
   [3171,3172,3173],
   [3174,3175,3176],
-  [3177,3178,3179]] })
-}
+  [3177,3178,3179]] }).translate([10,104,0]).scale([1,1,1]).rotateX(90).rotateY(0).rotateZ(0).lieFlat()
+); }

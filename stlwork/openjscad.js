@@ -55,9 +55,10 @@ OpenJsCad.env = function() {
 OpenJsCad.Viewer = function(containerelement) {
 // see the various methods below on how to change these
   this.camera = {
-    fov: 45,                           // field of view
+    fov: 125,                           // field of view
     angle:    {x: -60,y:  0,z:  -45},  // view angle about XYZ axis
-    position: {x:   0,y:  0,z:  100},  // initial position at XYZ
+    //angle:    {x: -20,y:  0,z:  -25},  // view angle about XYZ axis
+    position: {x:   50,y:  30,z:  100},  // initial position at XYZ
     clip:     {min: 0.5,  max: 1000},  // rendering outside this range is clipped
   };
   this.plate = {
@@ -75,7 +76,7 @@ OpenJsCad.Viewer = function(containerelement) {
     },
   };
   this.axis = {
-    draw: false,                // draw or not
+    draw: true,                // draw or not
     x: {
       neg: {r: 1, g: .5, b: .5, a: .5}, // color in negative direction
       pos: {r: 1, g:  0, b:  0, a: .8}, // color in positive direction

@@ -66,7 +66,7 @@ if ($_FILES["fileToUpload"]["size"] > 5000000) {
  <div class="col-md-2"><br> 
 
 
-<h4>Select object list file:</h4><br>
+<h4>Select STL list:</h4><br>
  <?$dir = scandir("uploads/"); ?>
 <? $ddir = array(); foreach($dir as $dd){ ?>
 <? if (preg_match("/^.*.stl$|.STL$/", $dd)){ array_push($ddir, $dd); }?>
@@ -172,39 +172,86 @@ function sub(obj) {
   <!-- this is your file input tag, so i hide it!-->
   <!-- i used the onchange event to fire the form submission-->
   <div style='height: 0px;width: 0px; overflow:hidden;'><input id="upfile" type="file" name="fileToUpload" value="upload" onchange="sub(this)" /></div>
-
   <br><div id="myDIV"><button type="submit" name=upload value="Upload file" id="uploadbutton" class="btn btn-primary" style="visibility:hidden">Upload file</button></div>
-<br>
 </form>
- </div>
- <div class="col-md-1"></div><br><br>
- <div class="col-md-5">
 
-<br> 
 
-<? if (isset($_SESSION['objectsactive'])){ 
-echo $_SESSION['objectsactive']; 
+<?  $configjson = json_decode(file_get_contents('slic3r/slic3rconfigfiles.json'), true);
+if (count($configjson['file'])>3){ $size=3; } else { $size = count($configjson['file']);}
 ?>
+
+
 <div class="row">
-<div class="col-sm-4"></div>
-<div class="col-sm-4"><form action=objects.json.form.php method=post>
-<table><tr><td><button type="submit" name="render" class="btn-sm btn-danger">Render to STL</button></td><td>&nbsp;</td>
-<? if((isset($_GET['id']))and($_GET['id']=="download")){?>
-<td><a href="uploads/mod.<?=$_SESSION['objectsactive']?>" class="btn btn-sm btn-success" role="button" aria-pressed="true">Download STL</a></td>
-<? } ?>
-</tr></table>
-</form></div>
-<div class="col-sm-4"></div>
-</div>
+<div class="col-sm-7">
+<form action="slic3r/slic3r_varcatch.php" method="post">
+<b>Select Slic3r configuration</b><br>
+<?=$_SESSION['configactive']?>
 <br>
-<? 
- include('3dviewer.inc.php');
-} ?>
+ <? $ddir = $configjson['file'];?>
+ <select class="form-control form-control-sm" name="configlist" size=<?=$size?>>
+  <? foreach($ddir as $key => &$val){ ?>
+  <? if ($val == $_SESSION['configactive']) { ?> 
+   <option value=<?=$key?> selected><?=$val?></option>
+  <? } else { ?>
+   <option value=<?=$key?>><?=$val?></option>
+  <? } ?>
+  <? } ?>
+ </select>
+</div>
+<div class="col-sm-5">
+<button type="submit" name="selectconfigfront" class="btn-sm btn-success">Select</button><br><br>
+<a href="slic3r/slic3rconfig_management.php" class="btn btn-sm btn-warning" role="button" aria-pressed="true">Manage</a><br><br>
+<br>
+</div>
+</div>
 <div class="row">
- <div class="col-sm-8">
-<? $jsonfile = preg_replace("/stl$|STL$/", "json", $_SESSION['objectsactive']); ?>
+<div class="col-sm-12"><br>
+<? if((($_SESSION['fromstl'] == 0)) and (isset($_SESSION['objectsactive']))){ ?>
+<?=$_SESSION['objectsactive']?> <button type="submit" name="slice" class="btn-sm btn-danger">Slice</button></form><br><br>
+<? } else if (isset($_SESSION['jscadfilename'])){ ?>
+<?=preg_replace("/.jscad$/", ".stl",$_SESSION['jscadfilename'])?> <button type="submit" name="slice" class="btn-sm btn-danger">Slice</button><br><br>
+<? } ?>
+</div>
+</div>
+
+</form>
+<br>
+ </div>
+ <!--<div class="col-md-1"></div> -->
+ <div class="col-md-4">
+<div class="row">
+<div class="col-sm-4"></div>
+<div class="col-sm-4"></div>
+<div class="col-sm-4"></div>
+<br>
+<?  include('3dviewer.inc.php'); ?>
+
+</div>
+
+<div class="row">
+<? //if (isset($_SESSION['objectsactive'])){  ?>
+ <div class="col-sm-9">
+<? $jsonfile = preg_replace("/.jscad$/", ".json", $_SESSION['jscadfilename']); ?>
+<?  if (file_exists('uploads/'.$jsonfile)) { ?>
 <? $movedata = json_decode(file_get_contents('uploads/'.$jsonfile), true);?>
-<form action=objects.json.form.php method=post>
+<? } else { 
+$movedata = array(
+	'x'=>"0",
+	'y'=>"0",
+	'z'=>"0",
+	'rx'=>"0",
+  	'ry'=>"0",
+  	'rz'=>"0",
+  	'mx'=>"0",
+  	'my'=>"0",
+  	'mz'=>"0",
+  	'lieflat'=>"",
+  	'sx'=>"1",
+  	'sy'=>"1",
+  	'sz'=>"1"
+ ); 
+} ?>
+<form action=test.objects.json.form.php method=post>
 Move X: <input name="movex" type="text" size=6 value="<?=$movedata['x']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
  Y: <input name="movey" type="text" size=6 value="<?=$movedata['y']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
  Z: <input name="movez" type="text" size=6 value="<?=$movedata['z']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
@@ -213,33 +260,51 @@ Rotate X: <input name="rotatex" type="text" size=6 value="<?=$movedata['rx']?>" 
  Y: <input name="rotatey" type="text" size=6 value="<?=$movedata['ry']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
  Z: <input name="rotatez" type="text" size=6 value="<?=$movedata['rz']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
 <br><br>
-<? if(!isset($_SESSION['mirrorx'])){ $_SESSION['mirrorx'] = ""; $_SESSION['mirrory'] = ""; $_SESSION['mirrorz'] = "";}?>
-Mirror X: <input type=checkbox name=mirrorx <?=$_SESSION['mirrorx']?>> &nbsp;&nbsp;&nbsp; 
-Y: <input type=checkbox name=mirrory <?=$_SESSION['mirrory']?>> &nbsp;&nbsp;&nbsp; 
-Z: <input type=checkbox name=mirrorz <?=$_SESSION['mirrorz']?>>
+Mirror X: <input type=checkbox name=mirrorx <?=$movedata['mx']?>> &nbsp;&nbsp;&nbsp; 
+Y: <input type=checkbox name=mirrory <?=$movedata['my']?>> &nbsp;&nbsp;&nbsp; 
+Z: <input type=checkbox name=mirrorz <?=$movedata['mz']?>> &nbsp;&nbsp;&nbsp;
+Lie flat: <input type=checkbox name=lieflat <?=$movedata['lieflat']?>>
+<br><br>
+Scale X: <input name="scalex" type="text" size=6 value="<?=$movedata['sx']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
+ Y: <input name="scaley" type="text" size=6 value="<?=$movedata['sy']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
+ Z: <input name="scalez" type="text" size=6 value="<?=$movedata['sz']?>" style="text-align:right;font-size:12px;"/>&nbsp;&nbsp;
 <br>
+<!--
+<pre><code>
+<?//echo $_SESSION['jscadcontents'];?>
+</code></pre>
+-->
 </div>
-<div class="col-sm-2">
+<div class="col-sm-1">
 <button type="submit" name="position" class="btn-sm btn-primary">Move</button><br><br>
 </form>
 </div>
 </div>
 
+<!--
 <div class="row">
- <!--
  <div class="col-sm-12">
   <br><pre><? //if(isset($_SESSION['headersyntax'])){ echo $_SESSION['headersyntax'].'<br>';}?> </pre><br>
   <bR>
-  <?//print_r($_SESSION['jsonfiletrack']); ?>
+  <pre>
+  <?//($_SESSION['jsoncontents']); ?>
+  </pre>
   <bR>
-  -->
-
  </div>
+-->
 </div>
+<div class="col-md-3">
 
+
+<br>
+<? include('select.jscad.inc.php');?>
+
+<? include('edit.jscad.inc.php');?>
+</div>
 
 </div>
 <div class="col-md-2">
+
 </div>
 <div class="col-md-2">
 </div>

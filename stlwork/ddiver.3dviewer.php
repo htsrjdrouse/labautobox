@@ -25,7 +25,7 @@ History:
 <script src="<?=$path?>openscad.js?0.5.1"></script>
 <script src="<?=$path?>js/jscad-worker.js?0.5.1" charset="utf-8"></script>
 <script src="<?=$path?>js/jscad-function.js?0.5.1" charset="utf-8"></script>
-<link rel="stylesheet" href="<?=$path?>min.css?0.5.1" type="text/css">
+<link rel="stylesheet" href="<?=$path?>min.css?0.5.1<?=date('l jS \of F Y h:i:s A'); ?>" type="text/css"> 
 <!--</head>-->
 
 <!--<body onload="loadProcessor()">-->
