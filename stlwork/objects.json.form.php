@@ -13,13 +13,12 @@
 header("Location: objects.json.php");
 ?>
 <? if(isset($_POST['savefile'])){
-
  //echo '<br>'.$_POST['filename'].'<br>';
  //echo preg_replace("/.jscad$/", ".stl", $_POST['filename']).'<bR>';
- unlink("uploads/".$_SESSION['jscadfilename']);
- $_SESSION['jscadfilename']= date('Ymds').'.jscad';
+ //unlink("uploads/".$_SESSION['jscadfilename']);
+ //$_SESSION['jscadfilename']= date('Ymds').'.jscad';
  $_SESSION['jscadcontents']= $_POST['macrofiledata'];
- $_SESSION['actualjscadfilename']= $_POST['filename'];
+ $_SESSION['jscadfilename']= $_POST['filename'];
  $stlfile =  preg_replace("/.jscad$/", ".stl", $_POST['filename']);
  $dir = scandir("uploads/");
  $ddir = array(); 
@@ -32,11 +31,10 @@ header("Location: objects.json.php");
  if (in_array($stlfile, $ddir)){ $fl = 1; } else { $fl = 0; }
  //echo 'flag '.$fl.'<br>';
  //echo $_POST['macrofiledata'];
- $_SESSION['jscadcontents']= $_POST['macrofiledata'];
  //$_SESSION['jscadfilename']= $_POST['filename'];
  $_SESSION['fromstl'] = 0;
  writejscad(preg_replace("/.jscad$/", "", $_SESSION['jscadfilename']),$_POST['macrofiledata']);
- system('sudo cp uploads/'.$_SESSION['jscadfilename'].' uploads/'.$_POST['filename']);
+ //system('sudo cp uploads/'.$_SESSION['jscadfilename'].' uploads/'.$_POST['filename']);
  }?>
 <? if(isset($_POST['render'])){
 $jscadfile = preg_replace("/stl$|STL$/", "jscad", $_SESSION['objectsactive']);

@@ -13,11 +13,13 @@
 <form action=objects.json.form.php method=post>
  <select class="form-control form-control-sm" name="objectlist" size=<?=$size?>>
   <? foreach($djdir as $key => &$val){ ?>
+  <? if (!preg_match('/^\d\d\d\d\d\d\d\d\d\d.jscad$/', $val)){ ?>
   <? if ($val == $_SESSION['jscadfilename']) { ?> 
    <option value=<?=$key?> selected><?=$val?></option>
   <? } else { ?>
    <option value=<?=$key?>><?=$val?></option>
   <? } ?>
+ <? } ?>
  <? } ?>
  </select>
 <br>

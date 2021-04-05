@@ -2050,5 +2050,5 @@ polyhedron({ points: [
   [1524,1525,1526],
   [1527,1528,1529],
   [1530,1531,1532],
-  [1533,1534,1535]] }).translate([140,160,0]).scale([1,1,1]).rotateX(0).rotateY(0).rotateZ(0).lieFlat()
+  [1533,1534,1535]] }).translate([40,160,0]).scale([1,1,1]).rotateX(0).rotateY(0).rotateZ(0).lieFlat()
 ); }
